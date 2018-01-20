@@ -1,4 +1,6 @@
-﻿namespace CryptoTool.Froms
+﻿using System;
+
+namespace CryptoTool.Froms
 {
     partial class MainForm
     {
@@ -37,17 +39,25 @@
             this.lab_sfile = new System.Windows.Forms.Label();
             this.btn_crypt = new System.Windows.Forms.Button();
             this.btn_decrypt = new System.Windows.Forms.Button();
+            this.ckbox_dp = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
+            // 
+            // sourceFileDialog
+            // 
+            this.sourceFileDialog.Description = "请选择目标文件";
+            this.sourceFileDialog.RootFolder = System.Environment.SpecialFolder.Recent;
+            this.sourceFileDialog.ShowNewFolderButton = false;
             // 
             // txtbox_sfile
             // 
             this.txtbox_sfile.AllowDrop = true;
             this.txtbox_sfile.Cursor = System.Windows.Forms.Cursors.IBeam;
-            this.txtbox_sfile.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtbox_sfile.Location = new System.Drawing.Point(117, 50);
+            this.txtbox_sfile.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtbox_sfile.Location = new System.Drawing.Point(117, 52);
             this.txtbox_sfile.Name = "txtbox_sfile";
-            this.txtbox_sfile.Size = new System.Drawing.Size(257, 26);
+            this.txtbox_sfile.Size = new System.Drawing.Size(257, 23);
             this.txtbox_sfile.TabIndex = 0;
+            this.txtbox_sfile.WordWrap = false;
             // 
             // btn_sfile
             // 
@@ -61,11 +71,12 @@
             // 
             // txtbox_pwd
             // 
-            this.txtbox_pwd.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.txtbox_pwd.Location = new System.Drawing.Point(117, 110);
+            this.txtbox_pwd.AllowDrop = true;
+            this.txtbox_pwd.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.txtbox_pwd.Location = new System.Drawing.Point(117, 112);
             this.txtbox_pwd.Name = "txtbox_pwd";
             this.txtbox_pwd.PasswordChar = '*';
-            this.txtbox_pwd.Size = new System.Drawing.Size(257, 26);
+            this.txtbox_pwd.Size = new System.Drawing.Size(257, 23);
             this.txtbox_pwd.TabIndex = 2;
             // 
             // lab_pwd
@@ -108,12 +119,24 @@
             this.btn_decrypt.Text = "解密";
             this.btn_decrypt.UseVisualStyleBackColor = true;
             // 
+            // ckbox_dp
+            // 
+            this.ckbox_dp.AutoSize = true;
+            this.ckbox_dp.Location = new System.Drawing.Point(400, 118);
+            this.ckbox_dp.Name = "ckbox_dp";
+            this.ckbox_dp.Size = new System.Drawing.Size(48, 16);
+            this.ckbox_dp.TabIndex = 7;
+            this.ckbox_dp.Text = "显示";
+            this.ckbox_dp.UseVisualStyleBackColor = true;
+            this.ckbox_dp.CheckedChanged += new System.EventHandler(this.ckbox_dp_CheckedChanged);
+            // 
             // MainForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(524, 250);
+            this.ClientSize = new System.Drawing.Size(525, 275);
+            this.Controls.Add(this.ckbox_dp);
             this.Controls.Add(this.btn_decrypt);
             this.Controls.Add(this.btn_crypt);
             this.Controls.Add(this.lab_sfile);
@@ -121,10 +144,13 @@
             this.Controls.Add(this.txtbox_pwd);
             this.Controls.Add(this.btn_sfile);
             this.Controls.Add(this.txtbox_sfile);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.Load += new System.EventHandler(this.MainForm_Load);
+            this.DragDrop += new System.Windows.Forms.DragEventHandler(this.MainForm_DragDrop);
+            this.DragEnter += new System.Windows.Forms.DragEventHandler(this.MainForm_DragEnter);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -140,5 +166,6 @@
         private System.Windows.Forms.Label lab_sfile;
         private System.Windows.Forms.Button btn_crypt;
         private System.Windows.Forms.Button btn_decrypt;
+        private System.Windows.Forms.CheckBox ckbox_dp;
     }
 }
