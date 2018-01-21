@@ -190,6 +190,7 @@ namespace CryptoTool.CryptoLib
                         CryptState = CryptState.Finish,
                         Description = "加密任务结束"
                     });
+                    isbusy = false;
                 }
                 catch(Exception e){
                     if(!(e is OperationCanceledException)){

@@ -132,7 +132,7 @@ namespace CryptoTool.Froms
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(525, 275);
+            this.ClientSize = new System.Drawing.Size(524, 262);
             this.Controls.Add(this.ckbox_dp);
             this.Controls.Add(this.btn_decrypt);
             this.Controls.Add(this.btn_crypt);

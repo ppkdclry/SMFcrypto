@@ -11,6 +11,7 @@ using CryptoTool.CryptoLib;
 
 namespace CryptoTool.Froms
 {
+    
     public partial class MainForm : Form
     {
         private string[] args = null;
@@ -135,6 +136,7 @@ namespace CryptoTool.Froms
         }
 
         private SMFCipher smfCipher { get; set; }
+        private ProBarForms taskProgressBarForm = new ProBarForms();
         /// <summary>
         /// 加密
         /// </summary>
@@ -170,25 +172,15 @@ namespace CryptoTool.Froms
             if(e.CryptState != CryptState.ComProc){
                 temp = string.Format("{0} - {1}", e.CryptState, e.Description);
                 this.Text = temp;
-                //ChangeProgress(temp);
-            }else{
+                taskProgressBarForm.pB_task.Value = 0;
+                taskProgressBarForm.Hide();
+            }
+            else{
                 temp = string.Format("{0} - {1},任务:{2}", e.CryptState, e.Description, e.CurrentNumber);
                 this.Text = temp;
-                //ChangeProgress(temp);
-            }
-        }
-
-        delegate void ChangeProgressEventHandler(string text);
-
-        void ChangeProgress(string text)
-        {
-            if (this.InvokeRequired)
-            {
-                var param = new object[] { text };
-                this.Invoke(new ChangeProgressEventHandler(ChangeProgress), param);
-            }else
-            {
-                this.Text = text;
+                taskProgressBarForm.Show();
+                taskProgressBarForm.pB_task.Maximum = e.TotalNumber;
+                taskProgressBarForm.pB_task.Value = e.CurrentNumber;
             }
         }
     }
