@@ -49,6 +49,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CryptoLib\CryptEventHandler.cs" />
+    <Compile Include="CryptoLib\SMFCipher.cs" />
     <Compile Include="Froms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -83,8 +85,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="CryptoLib\" />
-    <Folder Include="Utils\" />
+    <Folder Include="CryptoLib\Utils\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="timg128.ico" />

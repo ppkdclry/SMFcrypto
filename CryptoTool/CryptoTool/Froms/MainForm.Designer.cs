@@ -31,7 +31,6 @@ namespace CryptoTool.Froms
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.sourceFileDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.txtbox_sfile = new System.Windows.Forms.TextBox();
             this.btn_sfile = new System.Windows.Forms.Button();
             this.txtbox_pwd = new System.Windows.Forms.TextBox();
@@ -40,13 +39,8 @@ namespace CryptoTool.Froms
             this.btn_crypt = new System.Windows.Forms.Button();
             this.btn_decrypt = new System.Windows.Forms.Button();
             this.ckbox_dp = new System.Windows.Forms.CheckBox();
+            this.sourcefiledialog = new System.Windows.Forms.OpenFileDialog();
             this.SuspendLayout();
-            // 
-            // sourceFileDialog
-            // 
-            this.sourceFileDialog.Description = "请选择目标文件";
-            this.sourceFileDialog.RootFolder = System.Environment.SpecialFolder.Recent;
-            this.sourceFileDialog.ShowNewFolderButton = false;
             // 
             // txtbox_sfile
             // 
@@ -68,6 +62,7 @@ namespace CryptoTool.Froms
             this.btn_sfile.TabIndex = 1;
             this.btn_sfile.Text = "浏览";
             this.btn_sfile.UseVisualStyleBackColor = true;
+            this.btn_sfile.Click += new System.EventHandler(this.btn_sfile_Click);
             // 
             // txtbox_pwd
             // 
@@ -108,6 +103,7 @@ namespace CryptoTool.Froms
             this.btn_crypt.TabIndex = 5;
             this.btn_crypt.Text = "加密";
             this.btn_crypt.UseVisualStyleBackColor = true;
+            this.btn_crypt.Click += new System.EventHandler(this.btn_crypt_Click);
             // 
             // btn_decrypt
             // 
@@ -118,6 +114,7 @@ namespace CryptoTool.Froms
             this.btn_decrypt.TabIndex = 6;
             this.btn_decrypt.Text = "解密";
             this.btn_decrypt.UseVisualStyleBackColor = true;
+            this.btn_decrypt.Click += new System.EventHandler(this.btn_decrypt_Click);
             // 
             // ckbox_dp
             // 
@@ -157,8 +154,6 @@ namespace CryptoTool.Froms
         }
 
         #endregion
-
-        private System.Windows.Forms.FolderBrowserDialog sourceFileDialog;
         private System.Windows.Forms.TextBox txtbox_sfile;
         private System.Windows.Forms.Button btn_sfile;
         private System.Windows.Forms.TextBox txtbox_pwd;
@@ -167,5 +162,6 @@ namespace CryptoTool.Froms
         private System.Windows.Forms.Button btn_crypt;
         private System.Windows.Forms.Button btn_decrypt;
         private System.Windows.Forms.CheckBox ckbox_dp;
+        private System.Windows.Forms.OpenFileDialog sourcefiledialog;
     }
 }
