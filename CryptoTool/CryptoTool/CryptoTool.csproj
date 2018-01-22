@@ -51,6 +51,14 @@
   <ItemGroup>
     <Compile Include="CryptoLib\CryptEventHandler.cs" />
     <Compile Include="CryptoLib\SMFCipher.cs" />
+    <Compile Include="CryptoLib\Utils\ByteUtils.cs" />
+    <Compile Include="CryptoLib\Utils\Hex.cs" />
+    <Compile Include="CryptoLib\Utils\SM4.cs" />
+    <Compile Include="CryptoLib\Utils\SM4Utils.cs" />
+    <Compile Include="CryptoLib\Utils\SMFCBC.cs" />
+    <Compile Include="CryptoLib\Utils\SMFCore.cs" />
+    <Compile Include="CryptoLib\Utils\SmfDecryptTransform.cs" />
+    <Compile Include="CryptoLib\Utils\SmfEncryptTransform.cs" />
     <Compile Include="Froms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -93,9 +101,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="CryptoLib\Utils\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="timg128.ico" />
   </ItemGroup>

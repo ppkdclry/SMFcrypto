@@ -1,21 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace CryptoTool.CryptoLib.Utils
 {
-    class SM4
+    class SMFCore
     {
-        public const int SM4_ENCRYPT = 1;
-        public const int SM4_DECRYPT = 0;
+        static private int InputBlockSize { get { return 16; } }
+        static private int OutputBlockSize { get { return 16; } }
+        private SMFContext ctx;
+        public SMFCore(byte[] smfKey, byte[] smfIV,bool isEncrypt)
+        {
+            if (isEncrypt){
+                ctx = new SMFContext(SMFMode.SM4_ENCRYPT);
+                sm4_setiv(ctx.iv, smfIV);
+                sm4_setkey(ctx.sk, smfKey);
+            }
+            else{
+                ctx = new SMFContext(SMFMode.SM4_DECRYPT);
+                sm4_setiv(ctx.iv, smfIV);
+                sm4_setkey(ctx.sk, smfKey);
+                for (int i = 0; i < 16; i++)
+                {
+                    SWAP(ctx.sk, i);
+                }
+            }
+        }
 
-        private long GET_ULONG_BE(byte[] b, int i)
+        static private long GET_ULONG_BE(byte[] b, int i)
         {
             long n = (long)(b[i] & 0xff) << 24 | (long)((b[i + 1] & 0xff) << 16) | (long)((b[i + 2] & 0xff) << 8) | (long)(b[i + 3] & 0xff) & 0xffffffffL;
             return n;
         }
 
-        private void PUT_ULONG_BE(long n, byte[] b, int i)
+        static private void PUT_ULONG_BE(long n, byte[] b, int i)
         {
             b[i] = (byte)(int)(0xFF & n >> 24);
             b[i + 1] = (byte)(int)(0xFF & n >> 16);
@@ -23,24 +43,24 @@ namespace CryptoTool.CryptoLib.Utils
             b[i + 3] = (byte)(int)(0xFF & n);
         }
 
-        private long SHL(long x, int n)
+        static private long SHL(long x, int n)
         {
             return (x & 0xFFFFFFFF) << n;
         }
 
-        private long ROTL(long x, int n)
+        static private long ROTL(long x, int n)
         {
             return SHL(x, n) | x >> (32 - n);
         }
 
-        private void SWAP(long[] sk, int i)
+        static private void SWAP(long[] sk, int i)
         {
             long t = sk[i];
             sk[i] = sk[(31 - i)];
             sk[(31 - i)] = t;
         }
 
-        public byte[] SboxTable = new byte[] {
+        static private byte[] SboxTable = new byte[] {
             0xd6, 0x90, 0xe9, 0xfe, 0xcc, 0xe1, 0x3d, 0xb7,
             0x16, 0xb6, 0x14, 0xc2, 0x28, 0xfb, 0x2c, 0x05,
             0x2b, 0x67, 0x9a, 0x76, 0x2a, 0xbe, 0x04, 0xc3,
@@ -75,14 +95,14 @@ namespace CryptoTool.CryptoLib.Utils
             0x79, 0xee, 0x5f, 0x3e, 0xd7, 0xcb, 0x39, 0x48
         };
 
-        public uint[] FK = {
+        static private uint[] FK = {
             0xa3b1bac6,
             0x56aa3350,
             0x677d9197,
             0xb27022dc
         };
 
-        public uint[] CK = {
+        static private uint[] CK = {
             0x00070e15,0x1c232a31,0x383f464d,0x545b6269,
             0x70777e85,0x8c939aa1,0xa8afb6bd,0xc4cbd2d9,
             0xe0e7eef5,0xfc030a11,0x181f262d,0x343b4249,
@@ -93,14 +113,14 @@ namespace CryptoTool.CryptoLib.Utils
             0x10171e25,0x2c333a41,0x484f565d,0x646b7279
         };
 
-        private byte sm4Sbox(byte inch)
+        static private byte sm4Sbox(byte inch)
         {
             int i = inch & 0xFF;
             byte retVal = SboxTable[i];
             return retVal;
         }
 
-        private long sm4Lt(long ka)
+        static private long sm4Lt(long ka)
         {
             long bb = 0L;
             long c = 0L;
@@ -116,12 +136,12 @@ namespace CryptoTool.CryptoLib.Utils
             return c;
         }
 
-        private long sm4F(long x0, long x1, long x2, long x3, long rk)
+        static private long sm4F(long x0, long x1, long x2, long x3, long rk)
         {
             return x0 ^ sm4Lt(x1 ^ x2 ^ x3 ^ rk);
         }
 
-        private long sm4CalciRK(long ka)
+        static private long sm4CalciRK(long ka)
         {
             long bb = 0L;
             long rk = 0L;
@@ -137,7 +157,7 @@ namespace CryptoTool.CryptoLib.Utils
             return rk;
         }
 
-        private void sm4_setkey(long[] SK, byte[] key)
+        static private void sm4_setkey(long[] SK, byte[] key)
         {
             long[] MK = new long[4];
             long[] k = new long[36];
@@ -157,7 +177,12 @@ namespace CryptoTool.CryptoLib.Utils
             }
         }
 
-        private void sm4_one_round(long[] sk, byte[] input, byte[] output)
+        static private void sm4_setiv(byte[] IV,byte[] iv)
+        {
+            Array.Copy(IV, 0, iv, 0, InputBlockSize);
+        }
+
+        static private void sm4_one_round(long[] sk, byte[] input, byte[] output)
         {
             int i = 0;
             long[] ulbuf = new long[36];
@@ -176,7 +201,7 @@ namespace CryptoTool.CryptoLib.Utils
             PUT_ULONG_BE(ulbuf[32], output, 12);
         }
 
-        private byte[] padding(byte[] input, int mode)
+        static private byte[] padding(byte[] input,SMFMode mode)
         {
             if (input == null)
             {
@@ -184,7 +209,7 @@ namespace CryptoTool.CryptoLib.Utils
             }
 
             byte[] ret = (byte[])null;
-            if (mode == SM4_ENCRYPT)
+            if (mode == SMFMode.SM4_ENCRYPT)
             {
                 int p = 16 - input.Length % 16;
                 ret = new byte[input.Length + p];
@@ -203,134 +228,73 @@ namespace CryptoTool.CryptoLib.Utils
             return ret;
         }
 
-        public void sm4_setkey_enc(SM4_Context ctx, byte[] key)
+        public int encryptBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
         {
-            ctx.mode = SM4_ENCRYPT;
-            sm4_setkey(ctx.sk, key);
-        }
-
-        public void sm4_setkey_dec(SM4_Context ctx, byte[] key)
-        {
-            int i = 0;
-            ctx.mode = SM4_DECRYPT;
-            sm4_setkey(ctx.sk, key);
-            for (i = 0; i < 16; i++)
+            int res = 0;
+            for(int i = 0;i < inputCount / InputBlockSize; i++)
             {
-                SWAP(ctx.sk, i);
-            }
-        }
+                byte[] inBytes = new byte[InputBlockSize];
+                byte[] outBytes = new byte[InputBlockSize];
 
-        public byte[] sm4_crypt_ecb(SM4_Context ctx, byte[] input)
-        {
-            if ((ctx.isPadding) && (ctx.mode == SM4_ENCRYPT))
-            {
-                input = padding(input, SM4_ENCRYPT);
-            }
-
-            int length = input.Length;
-            byte[] bins = new byte[length];
-            Array.Copy(input, 0, bins, 0, length);
-            byte[] bous = new byte[length];
-            for (int i = 0; length > 0; length -= 16, i++)
-            {
-                byte[] inBytes = new byte[16];
-                byte[] outBytes = new byte[16];
-                Array.Copy(bins, i * 16, inBytes, 0, length > 16 ? 16 : length);
-                sm4_one_round(ctx.sk, inBytes, outBytes);
-                Array.Copy(outBytes, 0, bous, i * 16, length > 16 ? 16 : length);
-            }
-
-            if (ctx.isPadding && ctx.mode == SM4_DECRYPT)
-            {
-                bous = padding(bous, SM4_DECRYPT);
-            }
-            return bous;
-        }
-
-        public byte[] sm4_crypt_cbc(SM4_Context ctx, byte[] iv, byte[] input)
-        {
-            if (ctx.isPadding && ctx.mode == SM4_ENCRYPT)
-            {
-                input = padding(input, SM4_ENCRYPT);
-            }
-
-            int i = 0;
-            int length = input.Length;
-            byte[] bins = new byte[length];
-            Array.Copy(input, 0, bins, 0, length);
-            byte[] bous = null;
-            List<byte> bousList = new List<byte>();
-            if (ctx.mode == SM4_ENCRYPT)
-            {
-                for (int j = 0; length > 0; length -= 16, j++)
+                //多了一次拷贝
+                Array.Copy(inputBuffer, InputBlockSize * i + inputOffset, inBytes, 0, InputBlockSize);
+                for(int j = 0;j < InputBlockSize; j++)
                 {
-                    byte[] inBytes = new byte[16];
-                    byte[] outBytes = new byte[16];
-                    byte[] out1 = new byte[16];
-
-                    Array.Copy(bins, i * 16, inBytes, 0, length > 16 ? 16 : length);
-                    for (i = 0; i < 16; i++)
-                    {
-                        outBytes[i] = ((byte)(inBytes[i] ^ iv[i]));
-                    }
-                    sm4_one_round(ctx.sk, outBytes, out1);
-                    Array.Copy(out1, 0, iv, 0, 16);
-                    for (int k = 0; k < 16; k++)
-                    {
-                        bousList.Add(out1[k]);
-                    }
+                    outBytes[j] = ((byte)(inBytes[j] ^ ctx.iv[j]));
                 }
+                sm4_one_round(ctx.sk, outBytes, ctx.iv);
+                Array.Copy(ctx.iv, 0, outputBuffer, OutputBlockSize * i + outputOffset, InputBlockSize);
+                res += InputBlockSize;
             }
-            else
-            {
-                byte[] temp = new byte[16];
-                for (int j = 0; length > 0; length -= 16, j++)
-                {
-                    byte[] inBytes = new byte[16];
-                    byte[] outBytes = new byte[16];
-                    byte[] out1 = new byte[16];
-
-                    Array.Copy(bins, i * 16, inBytes, 0, length > 16 ? 16 : length);
-                    Array.Copy(inBytes, 0, temp, 0, 16);
-                    sm4_one_round(ctx.sk, inBytes, outBytes);
-                    for (i = 0; i < 16; i++)
-                    {
-                        out1[i] = ((byte)(outBytes[i] ^ iv[i]));
-                    }
-                    Array.Copy(temp, 0, iv, 0, 16);
-                    for (int k = 0; k < 16; k++)
-                    {
-                        bousList.Add(out1[k]);
-                    }
-                }
-
-            }
-
-            if (ctx.isPadding && ctx.mode == SM4_DECRYPT)
-            {
-                bous = padding(bousList.ToArray(), SM4_DECRYPT);
-                return bous;
-            }
-            else
-            {
-                return bousList.ToArray();
-            }
+            return res;
         }
-    }
 
-    class SM4_Context
-    {
-        public int mode;
-
-        public long[] sk;
-
-        public bool isPadding;
-
-        public SM4_Context()
+        public byte[] encryptFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
-            this.mode = 1;
-            this.isPadding = true;
-            this.sk = new long[32];
+            if (inputBuffer == null) return null;
+
+            byte[] inBytes = new byte[InputBlockSize];
+            byte[] outBytes = new byte[InputBlockSize];
+            byte[] result = new byte[InputBlockSize];
+
+            int p = InputBlockSize - inputCount % InputBlockSize;
+            Array.Copy(inputBuffer, inputOffset, inBytes, 0, inputCount);
+            for (int i = 0; i < p; i++)
+            {
+                inBytes[inputCount + i] = (byte)p;
+            }
+            for (int j = 0; j < InputBlockSize; j++)
+            {
+                outBytes[j] = ((byte)(inBytes[j] ^ ctx.iv[j]));
+            }
+            sm4_one_round(ctx.sk, outBytes, ctx.iv);
+            Array.Copy(ctx.iv, 0, result, 0, InputBlockSize);
+            return result;
+        }
+
+        enum SMFMode
+        {
+            SM4_ENCRYPT = 0,
+            SM4_DECRYPT = 1
+        }
+
+        class SMFContext
+        {
+            public SMFMode mode;
+
+            public long[] sk;
+
+            public byte[] iv;
+
+            public bool isPadding;
+
+            public SMFContext(SMFMode mode)
+            {
+                this.mode = mode;
+                this.isPadding = true;
+                this.iv = new byte[InputBlockSize];
+                this.sk = new long[32];
+            }
         }
     }
 }

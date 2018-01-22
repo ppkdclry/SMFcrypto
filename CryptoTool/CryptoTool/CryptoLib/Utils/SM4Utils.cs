@@ -1,9 +1,8 @@
-﻿using Org.BouncyCastle.Utilities.Encoders;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace smcrypto
+namespace CryptoTool.CryptoLib.Utils
 {
     class SM4Utils
     {

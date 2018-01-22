@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace smcrypto
+namespace CryptoTool.CryptoLib.Utils
 {
     /// <summary>
     /// 字节数组操作扩展类

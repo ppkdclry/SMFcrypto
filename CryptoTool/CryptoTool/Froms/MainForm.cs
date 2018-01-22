@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CryptoTool.CryptoLib;
+using CryptoTool.CryptoLib.Utils;
 
 namespace CryptoTool.Froms
 {
@@ -190,6 +191,7 @@ namespace CryptoTool.Froms
         /// <param name="e"></param>
         private void btn_decrypt_Click(object sender, EventArgs e)
         {
+            
             if (isdecrypt){
                 //如果在解密，则取消
                 smfCipher.Cancel();
