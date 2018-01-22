@@ -14,30 +14,22 @@ namespace CryptoTool.CryptoLib
         /// 单例模式
         /// </summary>
         private static SMFCipher uniqueInstance;
-        private SMFCipher() { }
-        public static SMFCipher GetInstance(string pwd)
+        private SMFCipher()
+        {
+            InitializeDelegates();
+        }
+        public static SMFCipher GetInstance()
         {
             if (uniqueInstance == null)
             {
-                uniqueInstance = new SMFCipher(pwd);
+                uniqueInstance = new SMFCipher();
             }
             return uniqueInstance;
         }
-        public static SMFCipher GetInstance(string pwd, string srcfile)
+        bool isbusy = false;
+        public bool isBusy()
         {
-            if(uniqueInstance == null)
-            {
-                uniqueInstance = new SMFCipher(pwd, srcfile);
-            }
-            return uniqueInstance;
-        }
-        public static SMFCipher GetInstance(string pwd,string srcfile,string destpath)
-        {
-            if(uniqueInstance == null)
-            {
-                uniqueInstance = new SMFCipher(pwd, srcfile, destpath);
-            }
-            return uniqueInstance;
+            return isbusy;
         }
 
         /// <summary>
@@ -53,7 +45,6 @@ namespace CryptoTool.CryptoLib
         Task mTask;
         CancellationTokenSource tokenSource;
         CancellationToken token;
-        bool isbusy = false;
 
         /// <summary>
         /// 报告客户端异步操作状态的私有委托
@@ -93,9 +84,12 @@ namespace CryptoTool.CryptoLib
         /// 传入口令
         /// </summary>
         /// <param name="pwd"></param>
-        protected SMFCipher(string pwd){
-            InitializeDelegates();
-            Password = pwd;
+        public SMFCipher setPwd(string pwd)
+        {
+            if (!isBusy()){
+                Password = pwd;
+            }
+            return this;
         }
 
         /// <summary>
@@ -103,11 +97,13 @@ namespace CryptoTool.CryptoLib
         /// </summary>
         /// <param name="pwd"></param>
         /// <param name="srcfile"></param>
-        protected SMFCipher(string pwd,string srcfile)
+        public SMFCipher setPwdSrc(string pwd,string srcfile)
         {
-            InitializeDelegates();
-            Password = pwd;
-            SourceFile = srcfile;
+            if (!isBusy()){
+                Password = pwd;
+                SourceFile = srcfile;
+            }
+            return this;
         }
 
         /// <summary>
@@ -116,39 +112,62 @@ namespace CryptoTool.CryptoLib
         /// <param name="pwd"></param>
         /// <param name="srcfile"></param>
         /// <param name="destpath"></param>
-        protected SMFCipher(string pwd,string srcfile,string destpath)
+        public SMFCipher setPwdSrcDest(string pwd,string srcfile,string destpath)
         {
-            InitializeDelegates();
-            Password = pwd;
-            SourceFile = srcfile;
-            DestPath = destpath;
+            if (!isBusy()){
+                Password = pwd;
+                SourceFile = srcfile;
+                DestPath = destpath;
+            }
+            return this;
         }
         
-        public void DoWork(bool isEncrypt)
-        {
-            if (isbusy)
-                return;
-            else
-                isbusy = true;
-
-            if (String.IsNullOrEmpty(SourceFile) || !System.IO.File.Exists(SourceFile)){
-                onTaskStateChanged(this, new TaskStateChangedEventArgs(){
+        private bool isParaOK(){
+            if (String.IsNullOrEmpty(SourceFile) || !System.IO.File.Exists(SourceFile))
+            {
+                onTaskStateChanged(this, new TaskStateChangedEventArgs()
+                {
                     CryptState = CryptState.Error,
                     Description = "请输入正确的目标文件"
                 });
-                return;
-            }else{
-                if (String.IsNullOrEmpty(DestPath)){
-                    try{
+                return false;
+            }
+            else if (String.IsNullOrEmpty(Password))
+            {
+                onTaskStateChanged(this, new TaskStateChangedEventArgs()
+                {
+                    CryptState = CryptState.Error,
+                    Description = "口令为空，请确认后重新调用"
+                });
+                return false;
+            }
+            else {
+                if (String.IsNullOrEmpty(DestPath))
+                {
+                    try
+                    {
                         DestPath = System.IO.Path.GetDirectoryName(SourceFile);
-                    }catch(Exception e){
-                        onTaskStateChanged(this, new TaskStateChangedEventArgs() {
+                    }
+                    catch (Exception e)
+                    {
+                        onTaskStateChanged(this, new TaskStateChangedEventArgs()
+                        {
                             CryptState = CryptState.Error,
                             Description = "设定输出目录时出错"
                         });
-                        return;
+                        return false;
                     }
                 }
+            }
+            return true;
+        }
+
+        public void DoWork(bool isEncrypt = true)
+        {
+            if (isBusy()) return;
+
+            if (!isParaOK()){
+                return;
             }
 
             AsyncOperation asyncOp = AsyncOperationManager.CreateOperation(1);
@@ -190,7 +209,6 @@ namespace CryptoTool.CryptoLib
                         CryptState = CryptState.Finish,
                         Description = "加密任务结束"
                     });
-                    isbusy = false;
                 }
                 catch(Exception e){
                     if(!(e is OperationCanceledException)){
@@ -208,13 +226,19 @@ namespace CryptoTool.CryptoLib
                     }
                     return;
                 }
+                finally{
+                    isbusy = false;
+                }
             }, asyncOp, token);
 
+            isbusy = true;
             mTask.Start();
         }
 
         public void Cancel(){
-            tokenSource.Cancel();
+            if (isBusy()){
+                tokenSource.Cancel();
+            }
         }
     }
 }

@@ -43,6 +43,8 @@ namespace CryptoTool.Froms
                     }
                 }
             }
+            smfCipher = SMFCipher.GetInstance();
+            smfCipher.OnTaskStateChanged += OnChanged;
         }
 
         /// <summary>
@@ -116,7 +118,7 @@ namespace CryptoTool.Froms
         private bool checkForms(bool isEncrypt)
         {
             if (!System.IO.File.Exists(txtbox_sfile.Text)) {
-                MessageBox.Show("请选择目标文件");
+                MessageBox.Show("目标文件不存在，请重新选择");
                 txtbox_sfile.Focus();
                 return false;
             }
@@ -137,6 +139,22 @@ namespace CryptoTool.Froms
 
         private SMFCipher smfCipher { get; set; }
         private ProBarForms taskProgressBarForm = new ProBarForms();
+
+        private void resetBtnEnc()
+        {
+            btn_encrypt.Text = "加密";
+            btn_encrypt.Enabled = true;
+            isencrypt = false;
+        }
+
+        private void resetBtnDec()
+        {
+            btn_decrypt.Text = "解密";
+            btn_decrypt.Enabled = true;
+            isdecrypt = false;
+        }
+
+        static private bool isencrypt = false;
         /// <summary>
         /// 加密
         /// </summary>
@@ -144,13 +162,27 @@ namespace CryptoTool.Froms
         /// <param name="e"></param>
         private void btn_crypt_Click(object sender, EventArgs e)
         {
-            if (checkForms(true)){
-                smfCipher = SMFCipher.GetInstance("lry", txtbox_sfile.Text);
-                smfCipher.OnTaskStateChanged += OnChanged;
-                smfCipher.DoWork(true);
+            if (isencrypt){
+                //如果在加密，则取消
+                smfCipher.Cancel();
+                resetBtnDec(); resetBtnEnc();
+            }
+            else{
+                if (!smfCipher.isBusy()){
+                    if (checkForms(true)){
+                        smfCipher = SMFCipher.GetInstance().setPwdSrc(txtbox_pwd.Text, txtbox_sfile.Text);
+                        smfCipher.DoWork(true);
+                    }
+                }
+                if (smfCipher.isBusy()){//如果正在加密，按钮则转变为取消解密的功能
+                    btn_encrypt.Text = "取消加密";
+                    isencrypt = true;
+                    btn_decrypt.Enabled = false;
+                }
             }
         }
 
+        static private bool isdecrypt = false;
         /// <summary>
         /// 解密
         /// </summary>
@@ -158,10 +190,20 @@ namespace CryptoTool.Froms
         /// <param name="e"></param>
         private void btn_decrypt_Click(object sender, EventArgs e)
         {
-            if (checkForms(false)){
-                if (smfCipher != null)
-                {
-                    smfCipher.Cancel();
+            if (isdecrypt){
+                //如果在解密，则取消
+                smfCipher.Cancel();
+                resetBtnDec();resetBtnEnc();
+            }else{
+                if (!smfCipher.isBusy()){
+                    if (checkForms(false)){
+                        smfCipher = SMFCipher.GetInstance().setPwdSrc(txtbox_pwd.Text, txtbox_sfile.Text);
+                        smfCipher.DoWork(false);
+                    }
+                }
+                if (smfCipher.isBusy()){//如果正在解密，按钮则转变为取消解密的功能
+                    btn_decrypt.Text = "取消解密";
+                    isdecrypt = true;
                 }
             }
         }
@@ -169,19 +211,23 @@ namespace CryptoTool.Froms
         void OnChanged(object sender,TaskStateChangedEventArgs e)
         {
             string temp = string.Empty;
-            if(e.CryptState != CryptState.ComProc){
+            if(e.CryptState == CryptState.Finish || e.CryptState == CryptState.Error || e.CryptState == CryptState.Cancel){
                 temp = string.Format("{0} - {1}", e.CryptState, e.Description);
                 this.Text = temp;
                 taskProgressBarForm.pB_task.Value = 0;
                 taskProgressBarForm.Hide();
+
+                //无论是错误、取消、完成任务，按钮状态都应该重设
+                resetBtnEnc();resetBtnDec();
             }
             else{
-                temp = string.Format("{0} - {1},任务:{2}", e.CryptState, e.Description, e.CurrentNumber);
+                temp = string.Format("{0} - {1},加密任务:{2}", e.CryptState, e.Description, e.CurrentNumber);
                 this.Text = temp;
                 taskProgressBarForm.Show();
                 taskProgressBarForm.pB_task.Maximum = e.TotalNumber;
                 taskProgressBarForm.pB_task.Value = e.CurrentNumber;
             }
         }
+
     }
 }

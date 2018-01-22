@@ -36,7 +36,7 @@ namespace CryptoTool.Froms
             this.txtbox_pwd = new System.Windows.Forms.TextBox();
             this.lab_pwd = new System.Windows.Forms.Label();
             this.lab_sfile = new System.Windows.Forms.Label();
-            this.btn_crypt = new System.Windows.Forms.Button();
+            this.btn_encrypt = new System.Windows.Forms.Button();
             this.btn_decrypt = new System.Windows.Forms.Button();
             this.ckbox_dp = new System.Windows.Forms.CheckBox();
             this.sourcefiledialog = new System.Windows.Forms.OpenFileDialog();
@@ -94,16 +94,16 @@ namespace CryptoTool.Froms
             this.lab_sfile.TabIndex = 4;
             this.lab_sfile.Text = "目标文件:";
             // 
-            // btn_crypt
+            // btn_encrypt
             // 
-            this.btn_crypt.Font = new System.Drawing.Font("楷体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btn_crypt.Location = new System.Drawing.Point(117, 172);
-            this.btn_crypt.Name = "btn_crypt";
-            this.btn_crypt.Size = new System.Drawing.Size(90, 34);
-            this.btn_crypt.TabIndex = 5;
-            this.btn_crypt.Text = "加密";
-            this.btn_crypt.UseVisualStyleBackColor = true;
-            this.btn_crypt.Click += new System.EventHandler(this.btn_crypt_Click);
+            this.btn_encrypt.Font = new System.Drawing.Font("楷体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btn_encrypt.Location = new System.Drawing.Point(117, 172);
+            this.btn_encrypt.Name = "btn_encrypt";
+            this.btn_encrypt.Size = new System.Drawing.Size(90, 34);
+            this.btn_encrypt.TabIndex = 5;
+            this.btn_encrypt.Text = "加密";
+            this.btn_encrypt.UseVisualStyleBackColor = true;
+            this.btn_encrypt.Click += new System.EventHandler(this.btn_crypt_Click);
             // 
             // btn_decrypt
             // 
@@ -135,7 +135,7 @@ namespace CryptoTool.Froms
             this.ClientSize = new System.Drawing.Size(524, 262);
             this.Controls.Add(this.ckbox_dp);
             this.Controls.Add(this.btn_decrypt);
-            this.Controls.Add(this.btn_crypt);
+            this.Controls.Add(this.btn_encrypt);
             this.Controls.Add(this.lab_sfile);
             this.Controls.Add(this.lab_pwd);
             this.Controls.Add(this.txtbox_pwd);
@@ -159,7 +159,7 @@ namespace CryptoTool.Froms
         private System.Windows.Forms.TextBox txtbox_pwd;
         private System.Windows.Forms.Label lab_pwd;
         private System.Windows.Forms.Label lab_sfile;
-        private System.Windows.Forms.Button btn_crypt;
+        private System.Windows.Forms.Button btn_encrypt;
         private System.Windows.Forms.Button btn_decrypt;
         private System.Windows.Forms.CheckBox ckbox_dp;
         private System.Windows.Forms.OpenFileDialog sourcefiledialog;
