@@ -57,7 +57,7 @@ namespace CryptoTool.CryptoLib.Utils
         }
 
         static private RandomNumberGenerator rand = new RNGCryptoServiceProvider();
-        static private byte[] GenerateRandomBytes(int count)
+        static public byte[] GenerateRandomBytes(int count)
         {
             byte[] bytes = new byte[count];
             rand.GetBytes(bytes);
