@@ -5,11 +5,11 @@ namespace CryptoTool.CryptoLib.Utils
 {
     public class SmfEncryptTransform : ICryptoTransform
     {
-        private SMFCore cryptCore;
+        private SMFCore encryptCore;
 
         public SmfEncryptTransform(byte[] smfKey, byte[] smfIV)
         {
-            cryptCore = new SMFCore(smfKey, smfIV, true);
+            encryptCore = new SMFCore(smfKey, smfIV, true);
         }
 
         public bool CanReuseTransform
@@ -52,12 +52,12 @@ namespace CryptoTool.CryptoLib.Utils
 
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
         {
-            return cryptCore.encryptBlock(inputBuffer, inputOffset, inputCount, outputBuffer, outputOffset);
+            return encryptCore.encryptBlock(inputBuffer, inputOffset, inputCount, outputBuffer, outputOffset);
         }
 
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
-            return cryptCore.encryptFinalBlock(inputBuffer, inputOffset, inputCount);
+            return encryptCore.encryptFinalBlock(inputBuffer, inputOffset, inputCount);
         }
     }
 }

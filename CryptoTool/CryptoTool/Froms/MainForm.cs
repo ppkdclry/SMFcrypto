@@ -206,6 +206,7 @@ namespace CryptoTool.Froms
                 if (smfCipher.isBusy()){//如果正在解密，按钮则转变为取消解密的功能
                     btn_decrypt.Text = "取消解密";
                     isdecrypt = true;
+                    btn_encrypt.Enabled = false;
                 }
             }
         }

@@ -173,9 +173,8 @@ namespace CryptoTool.CryptoLib
             AsyncOperation asyncOp = AsyncOperationManager.CreateOperation(1);
             tokenSource = new CancellationTokenSource();
             token = tokenSource.Token;
-            mTask = new Task((asyOp) =>
+            mTask = new Task(() =>
             {
-                AsyncOperation asyOperation = asyOp as AsyncOperation;
                 try{
                     //有可能在开始加密前取消处理
                     if (token.IsCancellationRequested){
@@ -229,7 +228,7 @@ namespace CryptoTool.CryptoLib
                 finally{
                     isbusy = false;
                 }
-            }, asyncOp, token);
+            }, token);
 
             isbusy = true;
             mTask.Start();

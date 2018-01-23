@@ -272,6 +272,27 @@ namespace CryptoTool.CryptoLib.Utils
             return result;
         }
 
+        public int decryptBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
+        {
+            int res = 0;
+            byte[] inBytes = new byte[InputBlockSize];
+            byte[] outBytes = new byte[InputBlockSize];
+            byte[] out1 = new byte[InputBlockSize];
+            for (int i = 0; i < inputCount / InputBlockSize; i++)
+            {
+                Array.Copy(inputBuffer, i * InputBlockSize + inputOffset, inBytes, 0, InputBlockSize);
+                sm4_one_round(ctx.sk, inBytes, outBytes);
+                for (int j = 0; j < InputBlockSize; j++)
+                {
+                    out1[j] = ((byte)(outBytes[j] ^ ctx.iv[j]));
+                }
+                Array.Copy(inBytes, 0, ctx.iv, 0, InputBlockSize);
+                Array.Copy(out1, 0, outputBuffer, i * OutputBlockSize + outputOffset, OutputBlockSize);
+                res += InputBlockSize;
+            }
+            return res;
+        }
+
         enum SMFMode
         {
             SM4_ENCRYPT = 0,

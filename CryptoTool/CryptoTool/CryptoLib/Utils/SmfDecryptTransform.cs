@@ -5,20 +5,18 @@ namespace CryptoTool.CryptoLib.Utils
 {
     public class SmfDecryptTransform : ICryptoTransform
     {
-        private byte[] smfIV;
-        private byte[] smfKey;
+        private SMFCore decryptCore;
 
         public SmfDecryptTransform(byte[] smfKey, byte[] smfIV)
         {
-            this.smfKey = smfKey;
-            this.smfIV = smfIV;
+            decryptCore = new SMFCore(smfKey, smfIV, false);
         }
 
         public bool CanReuseTransform
         {
             get
             {
-                throw new NotImplementedException();
+                return true;
             }
         }
 
@@ -26,7 +24,7 @@ namespace CryptoTool.CryptoLib.Utils
         {
             get
             {
-                throw new NotImplementedException();
+                return true;
             }
         }
 
@@ -34,7 +32,7 @@ namespace CryptoTool.CryptoLib.Utils
         {
             get
             {
-                throw new NotImplementedException();
+                return 16;
             }
         }
 
@@ -42,23 +40,24 @@ namespace CryptoTool.CryptoLib.Utils
         {
             get
             {
-                throw new NotImplementedException();
+                return 16;
             }
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            return;
         }
 
         public int TransformBlock(byte[] inputBuffer, int inputOffset, int inputCount, byte[] outputBuffer, int outputOffset)
         {
-            throw new NotImplementedException();
+            return decryptCore.decryptBlock(inputBuffer, inputOffset, inputCount, outputBuffer, outputOffset);
         }
 
         public byte[] TransformFinalBlock(byte[] inputBuffer, int inputOffset, int inputCount)
         {
-            throw new NotImplementedException();
+            return new byte[0];
+
         }
     }
 }

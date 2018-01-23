@@ -1,10 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using CryptoTool.CryptoLib.Utils;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.IO;
 
@@ -16,10 +11,12 @@ namespace CryptoTool.CryptoLib.Utils.Tests
         [TestMethod()]
         public void SMFCBCTest()
         {
+
             SMFCBC smfcbcAlg = SMFCBC.Create();
 
-            byte[] data = new byte[8];
-            for(int i = 0;i < 8; i++)
+            int total = 0;
+            byte[] data = new byte[256];
+            for (int i = 0; i < 256; i++)
             {
                 data[i] = (byte)i;
             }
@@ -27,11 +24,11 @@ namespace CryptoTool.CryptoLib.Utils.Tests
 
             try
             {
-                FileStream fStream = File.Open(FileName, FileMode.OpenOrCreate);
+                FileStream fStream = File.Open(FileName, FileMode.Create);
                 SMFCBC smfcrypto = new SMFCBC();
 
                 CryptoStream cStream = new CryptoStream(fStream,
-                    smfcrypto.CreateEncryptor(smfcbcAlg.Key,smfcbcAlg.IV),
+                    smfcrypto.CreateEncryptor(smfcbcAlg.Key, smfcbcAlg.IV),
                     CryptoStreamMode.Write);
 
                 BinaryWriter sWriter = new BinaryWriter(cStream);
@@ -40,8 +37,10 @@ namespace CryptoTool.CryptoLib.Utils.Tests
                 {
                     sWriter.Write(data);
                     sWriter.Write(data);
+                    total += data.Length;
+                    total += data.Length;
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Console.WriteLine("An error occurred: {0}", e.Message);
                 }
@@ -50,6 +49,7 @@ namespace CryptoTool.CryptoLib.Utils.Tests
                     sWriter.Close();
                     cStream.Close();
                     fStream.Close();
+                    smfcrypto.Clear();
                 }
 
             }
@@ -61,6 +61,51 @@ namespace CryptoTool.CryptoLib.Utils.Tests
             {
                 Console.WriteLine("A file error occurred: {0}", e.Message);
             }
+
+            byte[] res;
+            try
+            {
+                FileStream fStream = File.Open(FileName, FileMode.OpenOrCreate);
+                SMFCBC smfcrypto = new SMFCBC();
+
+                CryptoStream cStream = new CryptoStream(fStream,
+                    smfcrypto.CreateDecryptor(smfcbcAlg.Key, smfcbcAlg.IV),
+                    CryptoStreamMode.Read);
+
+                BinaryReader sReader = new BinaryReader(cStream);
+
+                byte[] resc = new byte[256];
+                try
+                {
+                    for (int i = 0; i < 4; i++)
+                    {
+                        res = sReader.ReadBytes(256);
+                        Array.Copy(res, 0, resc, 0, res.Length);
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine("An error occurred: {0}", e.Message);
+                }
+                finally
+                {
+                    sReader.Close();
+                    cStream.Close();
+                    fStream.Close();
+                    smfcrypto.Clear();
+                }
+            }
+            catch (CryptographicException e)
+            {
+                Console.WriteLine("A Cryptographic error occurred: {0}", e.Message);
+            }
+            catch (UnauthorizedAccessException e)
+            {
+                Console.WriteLine("A file error occurred: {0}", e.Message);
+            }
+            smfcbcAlg.Clear();
+
+            return;
         }
 
         [TestMethod()]
