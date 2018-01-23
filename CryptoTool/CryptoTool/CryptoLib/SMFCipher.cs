@@ -40,6 +40,7 @@ namespace CryptoTool.CryptoLib
         /// </summary>
         public string DestPath { get; set; }
         public string SourceFile { get; set; }
+        public string DestFile { get; set; }
         private string Password { get; set; }
 
         /// <summary>
@@ -145,11 +146,12 @@ namespace CryptoTool.CryptoLib
                 return false;
             }
             else {
-                if (String.IsNullOrEmpty(DestPath))
+                //如果没有设置目标目录，或者设置了确不存在默认为源文件目录
+                if (String.IsNullOrEmpty(DestPath) || !Directory.Exists(DestPath))
                 {
                     try
                     {
-                        DestPath = System.IO.Path.GetDirectoryName(SourceFile);
+                        DestPath = Path.GetDirectoryName(SourceFile);
                     }
                     catch (Exception e)
                     {
@@ -186,31 +188,27 @@ namespace CryptoTool.CryptoLib
                     }
 
                     //以下代码应替换为业务代码
-                    
-                    int total = 10;
-                    for(int i = 0;i < total; i++)
+                    if (isEncrypt)
                     {
-                        //进度报告
-                        asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
-                        {
-                            CryptState = CryptState.ComProc,
-                            Description = "加密中",
-                            TaskID = 0,
-                            CurrentNumber = i,
-                            TotalNumber = total
-                        });
-                        if (token.IsCancellationRequested)
-                        {
-                            throw new OperationCanceledException(token);
-                        }
-                        Thread.Sleep(500);
+                        string sourceFileName = Path.GetFileName(SourceFile);
+                        string destfile = Path.Combine(DestPath, sourceFileName + ".enc");
+                        encryptFileAsync(SourceFile, destfile, Password, asyOp);
+                    }
+                    else
+                    {
+                        string sourceFileExtension = Path.GetExtension(SourceFile);
+                        if (!sourceFileExtension.Equals(".enc"))
+                            throw new Exception("文件后缀名应该是.enc");
+                        string srcFileNameWithoutExtension = Path.GetFileNameWithoutExtension(SourceFile);
+                        string destfile = Path.Combine(DestPath, srcFileNameWithoutExtension);
+                        decryptFileAsync(SourceFile, destfile, Password, asyOp);
                     }
 
                     //传出完成信息
                     asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
                     {
                         CryptState = CryptState.Finish,
-                        Description = "加密任务结束"
+                        Description = "任务结束"
                     });
                 }
                 catch(Exception e){
@@ -241,6 +239,218 @@ namespace CryptoTool.CryptoLib
         ///加密标识
         private const ulong SM4_TAG = 0x8765432112345678;
         private const int BUFSIZE = 128 * 1024;
+        /// <summary>
+        /// 可取消文件加密
+        /// </summary>
+        /// <param name="srcFile"></param>
+        /// <param name="destFile"></param>
+        /// <param name="password"></param>
+        /// <param name="asyOp"></param>
+        private void encryptFileAsync(string srcFile,string destFile,string password,AsyncOperation asyOp)
+        {
+            FileStream fsrc = null, fdest = null;
+            CryptoStream cdest = null, chash = null;
+            BinaryWriter bwdest = null;
+            try
+            {
+                fsrc = File.OpenRead(srcFile);
+                fdest = File.OpenWrite(destFile);
+
+                long lSize = fsrc.Length;
+                byte[] buffer = new byte[BUFSIZE];
+                int tmpRead = -1;
+                int totalRead = 0;
+
+                byte[] IV = SMFCBC.GenerateRandomBytes(16);
+                byte[] SALT = SMFCBC.GenerateRandomBytes(16);
+
+                PasswordDeriveBytes pdb = new PasswordDeriveBytes(password, SALT, "SHA256", 100);
+                byte[] KEY = pdb.GetBytes(16);
+
+                //往文件头添加IV和SALT值
+                fdest.Write(IV, 0, IV.Length);
+                fdest.Write(SALT, 0, SALT.Length);
+
+                //创建SM4加密器和SHA256散列器
+                SMFCBC smfencryptor = new SMFCBC();
+                HashAlgorithm hasher = SHA256.Create();
+                cdest = new CryptoStream(fdest, smfencryptor.CreateEncryptor(KEY, IV), CryptoStreamMode.Write);
+                chash = new CryptoStream(Stream.Null, hasher, CryptoStreamMode.Write);
+                //包装加密流
+                bwdest = new BinaryWriter(cdest);
+
+                //加密开头为长度和文件标识
+                bwdest.Write(lSize);
+                bwdest.Write(SM4_TAG);
+
+                //增加报告进度
+                int totalNumber = (int)(lSize / BUFSIZE);
+
+                while ((tmpRead = fsrc.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    bwdest.Write(buffer, 0, tmpRead);
+                    chash.Write(buffer, 0, tmpRead);
+                    totalRead += tmpRead;
+
+                    //报告进度
+                    asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
+                    {
+                        CryptState = CryptState.ComProc,
+                        Description = "加密中",
+                        TaskID = 0,
+                        CurrentNumber = totalRead / BUFSIZE,
+                        TotalNumber = totalNumber
+                    });
+
+                    //如果取消，则抛出取消异常
+                    if (token.IsCancellationRequested)
+                    {
+                        throw new OperationCanceledException(token);
+                    }
+                }
+                //关闭SHA256散列器
+                chash.Flush();
+                chash.Close();
+
+                byte[] HASH = hasher.Hash;
+
+                bwdest.Write(HASH, 0, HASH.Length);
+                //关闭二进制包装类
+                bwdest.Flush();
+                bwdest.Close();
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                //顺序不可颠倒
+                if (bwdest != null) bwdest.Close();
+                if (chash != null) chash.Close();
+                if (cdest != null) cdest.Close();
+                if (fdest != null) fdest.Close();
+                if (fsrc != null) fsrc.Close();
+            }
+            return;
+        }
+
+        /// <summary>
+        /// 可取消文件解密
+        /// </summary>
+        /// <param name="srcFile"></param>
+        /// <param name="destFile"></param>
+        /// <param name="password"></param>
+        /// <param name="asyOp"></param>
+        private void decryptFileAsync(string srcFile, string destFile, string password, AsyncOperation asyOp)
+        {
+            FileStream fsrc = null, fdest = null;
+            CryptoStream cdest = null, chash = null;
+            BinaryReader brdest = null;
+            try {
+                fsrc = File.OpenRead(srcFile);
+                fdest = File.OpenWrite(destFile);
+
+                long lSize = (int)srcFile.Length;
+                byte[] buffer = new byte[BUFSIZE];
+                int hasRead = -1;
+                int totalRead = 0;
+
+                byte[] IV = new byte[16];
+                byte[] SALT = new byte[16];
+                fsrc.Read(IV, 0, 16);
+                fsrc.Read(SALT, 0, 16);
+
+                PasswordDeriveBytes pdb = new PasswordDeriveBytes(password, SALT, "SHA256", 100);
+                byte[] KEY = pdb.GetBytes(16);
+
+                //创建SM4解密器和SHA256散列器
+                SMFCBC smfdecryptor = new SMFCBC();
+                HashAlgorithm hasher = SHA256.Create();
+                cdest = new CryptoStream(fsrc, smfdecryptor.CreateDecryptor(KEY, IV), CryptoStreamMode.Read);
+                chash = new CryptoStream(Stream.Null, hasher, CryptoStreamMode.Write);
+                BinaryReader brDest = new BinaryReader(cdest);
+                lSize = brDest.ReadInt64();
+                ulong tag = brDest.ReadUInt64();
+
+                if (tag != SM4_TAG)
+                {
+                    throw new Exception("文件解密出错(口令不对，或者不是加密文件)");
+                }
+
+                long numReads = lSize / BUFSIZE;
+                long numRest = (long)lSize % BUFSIZE;
+
+                //增加报告
+                int totalNumber = (int)(lSize / BUFSIZE);
+
+                for (int i = 0; i < numReads; i++)
+                {
+                    hasRead = brDest.Read(buffer, 0, buffer.Length);
+                    fdest.Write(buffer, 0, hasRead);
+                    chash.Write(buffer, 0, hasRead);
+                    totalRead += hasRead;
+
+                    //报告进度
+                    asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
+                    {
+                        CryptState = CryptState.DecomProc,
+                        Description = "解密中",
+                        TaskID = 0,
+                        CurrentNumber = totalRead / BUFSIZE,
+                        TotalNumber = totalNumber
+                    });
+
+                    //如果取消，则抛出取消异常
+                    if (token.IsCancellationRequested)
+                    {
+                        throw new OperationCanceledException(token);
+                    }
+                }
+
+                if (numRest > 0)
+                {
+                    hasRead = brDest.Read(buffer, 0, (int)numRest);
+                    fdest.Write(buffer, 0, hasRead);
+                    chash.Write(buffer, 0, hasRead);
+                    totalRead += hasRead;
+                }
+
+                //关闭散列器
+                chash.Flush();
+                chash.Close();
+
+                fdest.Flush();
+                fdest.Close();
+
+                byte[] curHash = hasher.Hash;
+
+                //和文件中的散列值比较
+                byte[] oldHash = new byte[hasher.HashSize / 8];
+                hasRead = brDest.Read(oldHash, 0, oldHash.Length);
+                if ((oldHash.Length != hasRead) || (!CheckByteArrays(oldHash, curHash)))
+                    throw new Exception("文件经过修改");
+
+                brDest.Close();
+
+                if (totalRead != lSize)
+                    throw new Exception("文件长度不对");
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                //顺序不可颠倒
+                if (brdest != null) brdest.Close();
+                if (chash != null) chash.Close();
+                if (cdest != null) cdest.Close();
+                if (fdest != null) fdest.Close();
+                if (fsrc != null) fsrc.Close();
+            }
+            return;
+        }
         /// <summary>
         /// 加密文件
         /// </summary>
