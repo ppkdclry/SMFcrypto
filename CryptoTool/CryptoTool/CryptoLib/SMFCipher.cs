@@ -700,8 +700,8 @@ namespace CryptoTool.CryptoLib
                     fsOut.Write(buffer, 0, hasRead);
                     totalRead += hasRead;
 
-                    //报告进度，由于解压无法知道解压进度，所以当读取量为压缩文件大小时，置为99%
-                    int curNumber = totalRead / BUFSIZE < totalNumber ? totalRead / BUFSIZE : totalNumber - 1;
+                    //报告进度，由于解压无法知道解压进度，所以当读取量为压缩文件大小时，置为100%
+                    int curNumber = totalRead / BUFSIZE < totalNumber ? totalRead / BUFSIZE : totalNumber;
                     asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
                     {
                         CryptState = CryptState.Decompress,
