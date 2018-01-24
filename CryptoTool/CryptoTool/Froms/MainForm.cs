@@ -214,21 +214,31 @@ namespace CryptoTool.Froms
         void OnChanged(object sender,TaskStateChangedEventArgs e)
         {
             string temp = string.Empty;
-            if(e.CryptState == CryptState.Finish || e.CryptState == CryptState.Error || e.CryptState == CryptState.Cancel){
-                temp = string.Format("{0} - {1}", e.CryptState, e.Description);
-                this.Text = temp;
-                taskProgressBarForm.pB_task.Value = 0;
-                taskProgressBarForm.Hide();
-
-                //无论是错误、取消、完成任务，按钮状态都应该重设
-                resetBtnEnc();resetBtnDec();
-            }
-            else{
-                temp = string.Format("{0} - {1},加密任务:{2}", e.CryptState, e.Description, e.CurrentNumber);
-                this.Text = temp;
-                taskProgressBarForm.Show();
-                taskProgressBarForm.pB_task.Maximum = e.TotalNumber;
-                taskProgressBarForm.pB_task.Value = e.CurrentNumber;
+            switch (e.CryptState)
+            {
+                case CryptState.Finish:
+                case CryptState.Error:
+                case CryptState.Cancel:
+                    temp = string.Format("{0}", e.Description);
+                    this.Text = temp;
+                    taskProgressBarForm.pB_task.Value = 0;
+                    taskProgressBarForm.pB_task.Maximum = 1;
+                    taskProgressBarForm.Hide();
+                    //无论是错误、取消、完成任务，按钮状态都应该重设
+                    resetBtnEnc(); resetBtnDec();
+                    break;
+                case CryptState.Encrypt:
+                case CryptState.Decrypt:
+                case CryptState.Compress:
+                case CryptState.Decompress:
+                    temp = string.Format("{0}:{1}/{2}", e.Description, e.CurrentNumber, e.TotalNumber);
+                    this.Text = temp;
+                    taskProgressBarForm.Show();
+                    taskProgressBarForm.pB_task.Maximum = e.TotalNumber;
+                    taskProgressBarForm.pB_task.Value = e.CurrentNumber;
+                    break;
+                default:
+                    break;
             }
         }
 

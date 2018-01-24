@@ -9,8 +9,10 @@ namespace CryptoTool.CryptoLib
     public enum CryptState
     {
         Null,
-        ComProc,
-        DecomProc,
+        Compress,
+        Decompress,
+        Encrypt,
+        Decrypt,
         Finish,
         Cancel,
         Error

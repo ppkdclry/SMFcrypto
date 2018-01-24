@@ -8,6 +8,7 @@ using System.Threading;
 using System.IO;
 using CryptoTool.CryptoLib.Utils;
 using System.Security.Cryptography;
+using System.IO.Compression;
 
 namespace CryptoTool.CryptoLib
 {
@@ -181,6 +182,9 @@ namespace CryptoTool.CryptoLib
             mTask = new Task((para) =>
             {
                 AsyncOperation asyOp = para as AsyncOperation;
+
+                //临时文件
+                string tmpFileName = null;
                 try{
                     //有可能在开始加密前取消处理
                     if (token.IsCancellationRequested){
@@ -190,25 +194,31 @@ namespace CryptoTool.CryptoLib
                     //以下代码应替换为业务代码
                     if (isEncrypt)
                     {
+                        //待加密文件增加后缀.enc作为加密后文件名
                         string sourceFileName = Path.GetFileName(SourceFile);
+                        tmpFileName = Path.Combine(DestPath, sourceFileName + ".tmp");
                         string destfile = Path.Combine(DestPath, sourceFileName + ".enc");
-                        encryptFileAsync(SourceFile, destfile, Password, asyOp);
+                        compressFileAsync(SourceFile, tmpFileName, asyOp);
+                        encryptFileAsync(tmpFileName, destfile, Password, asyOp);
                     }
                     else
                     {
+                        //待解密文件需以.enc为后缀，去掉.enc后增加.rec作为解密文件名
                         string sourceFileExtension = Path.GetExtension(SourceFile);
                         if (!sourceFileExtension.Equals(".enc"))
                             throw new Exception("文件后缀名应该是.enc");
                         string srcFileNameWithoutExtension = Path.GetFileNameWithoutExtension(SourceFile);
-                        string destfile = Path.Combine(DestPath, srcFileNameWithoutExtension);
-                        decryptFileAsync(SourceFile, destfile, Password, asyOp);
+                        string destfile = Path.Combine(DestPath, srcFileNameWithoutExtension + ".rec");
+                        tmpFileName = Path.Combine(DestPath, srcFileNameWithoutExtension + ".tmp");
+                        decryptFileAsync(SourceFile, tmpFileName, Password, asyOp);
+                        decompressFileAsync(tmpFileName, destfile, asyOp);
                     }
 
                     //传出完成信息
                     asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
                     {
                         CryptState = CryptState.Finish,
-                        Description = "任务结束"
+                        Description = "任务完成"
                     });
                 }
                 catch(Exception e){
@@ -222,12 +232,25 @@ namespace CryptoTool.CryptoLib
                         asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
                         {
                             CryptState = CryptState.Cancel,
-                            Description = "任务已取消"
+                            Description = "任务取消"
                         });
                     }
                     return;
                 }
                 finally{
+                    //任务退出时清除临时文件
+                    if (!string.IsNullOrEmpty(tmpFileName) && File.Exists(tmpFileName))
+                    {
+                        try
+                        {
+                            File.Delete(tmpFileName);
+                        }
+                        catch(Exception e)
+                        {
+                            //如果临时文件删除失败，什么都不做，就当什么也没发生
+                        }
+                    }
+                    //任务退出时，加解密器忙位重置
                     isbusy = false;
                 }
             }, asyncOp, token);
@@ -295,7 +318,7 @@ namespace CryptoTool.CryptoLib
                     //报告进度
                     asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
                     {
-                        CryptState = CryptState.ComProc,
+                        CryptState = CryptState.Encrypt,
                         Description = "加密中",
                         TaskID = 0,
                         CurrentNumber = totalRead / BUFSIZE,
@@ -394,7 +417,7 @@ namespace CryptoTool.CryptoLib
                     //报告进度
                     asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
                     {
-                        CryptState = CryptState.DecomProc,
+                        CryptState = CryptState.Decrypt,
                         Description = "解密中",
                         TaskID = 0,
                         CurrentNumber = totalRead / BUFSIZE,
@@ -591,6 +614,121 @@ namespace CryptoTool.CryptoLib
                 }
 
             }
+        }
+
+        /// <summary>
+        /// 可取消的压缩函数
+        /// </summary>
+        /// <param name="srcFile"></param>
+        /// <param name="destFile"></param>
+        /// <param name="asyOp"></param>
+        private void compressFileAsync(string srcFile,string destFile,AsyncOperation asyOp)
+        {
+            FileStream fsIn = null, fsOut = null;
+            GZipStream compressGZipStream = null;
+            try
+            {
+                //待压缩
+                fsIn = new FileStream(srcFile, FileMode.Open);
+                fsOut = new FileStream(destFile, FileMode.Create);
+
+                long lSize = fsIn.Length;
+                int hasRead = -1;
+                int totalRead = 0;
+                byte[] buffer = new byte[BUFSIZE];
+
+                compressGZipStream = new GZipStream(fsOut, CompressionMode.Compress);
+
+                //待报告内容
+                int totalNumber= (int)lSize / BUFSIZE;
+                while((hasRead = fsIn.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    compressGZipStream.Write(buffer, 0, hasRead);
+                    totalRead += hasRead;
+
+                    //报告进度
+                    asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
+                    {
+                        CryptState = CryptState.Compress,
+                        Description = "压缩中",
+                        TaskID = 0,
+                        CurrentNumber = totalRead / BUFSIZE,
+                        TotalNumber = totalNumber
+                    });
+
+                    //如果取消，则抛出取消异常
+                    if (token.IsCancellationRequested)
+                    {
+                        throw new OperationCanceledException(token);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                if (compressGZipStream != null)  compressGZipStream.Close();
+                if (fsOut != null) fsOut.Close();
+                if (fsIn != null) fsIn.Close();
+            }
+            return;
+        }
+
+        private void decompressFileAsync(string srcFile,string destFile,AsyncOperation asyOp)
+        {
+            FileStream fsIn = null, fsOut = null;
+            GZipStream decompressGZipStream = null;
+            try
+            {
+                //解压
+                fsIn = new FileStream(srcFile, FileMode.Open);
+                fsOut = new FileStream(destFile, FileMode.Create);
+
+                long lSize = fsIn.Length;
+                int hasRead = -1;
+                int totalRead = 0;
+                byte[] buffer = new byte[BUFSIZE];
+
+                decompressGZipStream = new GZipStream(fsIn, CompressionMode.Decompress);
+
+                //报告内容
+                int totalNumber = (int)lSize / BUFSIZE;
+                while((hasRead = decompressGZipStream.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    fsOut.Write(buffer, 0, hasRead);
+                    totalRead += hasRead;
+
+                    //报告进度，由于解压无法知道解压进度，所以当读取量为压缩文件大小时，置为99%
+                    int curNumber = totalRead / BUFSIZE < totalNumber ? totalRead / BUFSIZE : totalNumber - 1;
+                    asyOp.Post(onTaskStateChangedReportDelgate, new TaskStateChangedEventArgs()
+                    {
+                        CryptState = CryptState.Decompress,
+                        Description = "解压中",
+                        TaskID = 0,
+                        CurrentNumber = curNumber,
+                        TotalNumber = totalNumber
+                    });
+
+                    //如果取消，则抛出取消异常
+                    if (token.IsCancellationRequested)
+                    {
+                        throw new OperationCanceledException(token);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                throw e;
+            }
+            finally
+            {
+                if (decompressGZipStream != null) decompressGZipStream.Close();
+                if (fsIn != null) fsIn.Close();
+                if (fsOut != null) fsOut.Close();
+            }
+            return;
         }
 
         static private bool CheckByteArrays(byte[] b1,byte[] b2)
