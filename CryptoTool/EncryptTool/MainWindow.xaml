@@ -1,0 +1,100 @@
+﻿<Window x:Name="MainPage" x:Class="EncryptTool.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EncryptTool"
+        mc:Ignorable="d"
+        Title="MainWindow" 
+        WindowStartupLocation="CenterScreen" 
+        Style="{StaticResource StyleNoresizeWindow}"
+        Loaded="Window_Loaded" Width="770" Height="550" ResizeMode="NoResize" MouseMove="Window_Move">
+    <Window.Resources>
+        <Style TargetType="{x:Type Button}" x:Key="StyleMenuButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid>
+                            <ContentPresenter Content="{TemplateBinding Content}"></ContentPresenter>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" x:Key="SettingStyle" BasedOn="{StaticResource StyleMenuButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Image Name="setbtnbg" Source="/image/SetEnable.ico"></Image>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="setbtnbg" Property="Source" Value="/image/SetOver.ico"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="setbtnbg" Property="Source" Value="/image/SetPressed.ico"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" x:Key="MinimizingStyle" BasedOn="{StaticResource StyleMenuButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Image Name="minbtnbg" Source="/image/MinimizeEnable.ico"></Image>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="minbtnbg" Property="Source" Value="/image/MinimizeOver.ico"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="minbtnbg" Property="Source" Value="/image/MinimizePressed.ico"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type Button}" x:Key="ClosingStyle" BasedOn="{StaticResource StyleMenuButton}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Image Name="closebtnbg" Source="/image/CloseEnable.ico"></Image>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="closebtnbg" Property="Source" Value="/image/CloseOver.ico"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="closebtnbg" Property="Source" Value="/image/ClosePressed.ico"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+        <StackPanel x:Name="MainMenu" Height="40"  Width="750"  HorizontalAlignment="Left" VerticalAlignment="Top" Background="#FF0078C8" Orientation="Horizontal">
+            <Image x:Name="image" Source="/image/timg128.ico" Margin="4,4,4,4" Height="32" Width="32"/>
+            <Label x:Name="label" Content="东南大学网络空间安全学院" Margin="0,5,290,5" Height="30" Width="300" Padding="0" FontSize="18" VerticalContentAlignment="Center" Foreground="White" />
+            <Button x:Name="Set" Style="{StaticResource SettingStyle}"/>
+            <Button x:Name="Minimize" Style="{StaticResource MinimizingStyle}" Click="Minimize_Click"/>
+            <Button x:Name="Close" Style="{StaticResource  ClosingStyle}"/>
+        </StackPanel>
+        <DockPanel Height="490" Width="750" Margin="0,40,0,0">
+            <StackPanel x:Name="SubMenu" DockPanel.Dock="Top" Height="70"  Width="750" Background="#FF0078C8"></StackPanel>
+            <StackPanel x:Name="WorkSpace" DockPanel.Dock="Bottom" Height="420"  Width="750"/>
+        </DockPanel>
+    </Grid>
+</Window>
