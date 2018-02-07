@@ -8,8 +8,9 @@
         Title="MainWindow" 
         WindowStartupLocation="CenterScreen" 
         Style="{StaticResource StyleNoresizeWindow}"
-        Loaded="Window_Loaded" Width="770" Height="550" ResizeMode="NoResize" MouseMove="Window_Move">
+        Loaded="Window_Loaded" Width="770" Height="550" ResizeMode="NoResize" MouseMove="Window_Move" WindowStyle="None" IsHitTestVisible="True" ScrollViewer.VerticalScrollBarVisibility="Disabled">
     <Window.Resources>
+         
         <Style TargetType="{x:Type Button}" x:Key="StyleMenuButton">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei"/>
@@ -30,7 +31,7 @@
             </Setter>
         </Style>
 
-        <Style TargetType="{x:Type Button}" x:Key="SettingStyle" BasedOn="{StaticResource StyleMenuButton}">
+        <!--<Style TargetType="{x:Type Button}" x:Key="SettingStyle" BasedOn="{StaticResource StyleMenuButton}">
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">
@@ -40,13 +41,13 @@
                                 <Setter TargetName="setbtnbg" Property="Source" Value="/image/SetOver.ico"></Setter>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="setbtnbg" Property="Source" Value="/image/SetPressed.ico"></Setter>
+                                <Setter TargetName="setbtnbg" Property="Source" Value="/image/SetPress.ico"></Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
-        </Style>
+        </Style>-->
 
         <Style TargetType="{x:Type Button}" x:Key="MinimizingStyle" BasedOn="{StaticResource StyleMenuButton}">
             <Setter Property="Template">
@@ -58,7 +59,7 @@
                                 <Setter TargetName="minbtnbg" Property="Source" Value="/image/MinimizeOver.ico"></Setter>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="minbtnbg" Property="Source" Value="/image/MinimizePressed.ico"></Setter>
+                                <Setter TargetName="minbtnbg" Property="Source" Value="/image/MinimizePress.ico"></Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -76,25 +77,265 @@
                                 <Setter TargetName="closebtnbg" Property="Source" Value="/image/CloseOver.ico"></Setter>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="closebtnbg" Property="Source" Value="/image/ClosePressed.ico"></Setter>
+                                <Setter TargetName="closebtnbg" Property="Source" Value="/image/ClosePress.ico"></Setter>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <Style TargetType="{x:Type Menu}" x:Key="SetStyle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Menu}">
+                        <ItemsPresenter></ItemsPresenter>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type MenuItem}" x:Key="SetItemStyle1">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Grid>
+                            <Image Name="setbtnbg" Source="/image/SetEnable.ico"></Image>
+                            <Popup x:Name="SetPop" IsOpen="{TemplateBinding IsSubmenuOpen}" 
+                                   AllowsTransparency="True"
+                                   PopupAnimation="Slide"
+                                   Placement="Bottom">
+                                <Border Margin="10" Padding="0">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="0"/>
+                                    </Border.Effect>
+                                    <Grid Background="#FFFFFF">
+                                        <StackPanel IsItemsHost="True">
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="setbtnbg" Property="Source" Value="/image/SetOver.ico"></Setter>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="setbtnbg" Property="Source" Value="/image/SetPress.ico"></Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type MenuItem}" x:Key="SetItemStyle2">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="26"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type MenuItem}">
+                        <Border Margin="1" Height="24" Width="120" x:Name="bgMenuItem" Background="Transparent">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" SharedSizeGroup="MenuTextColumnGroup"/>
+                                </Grid.ColumnDefinitions>
+                                <ContentPresenter Grid.Column="0"  x:Name="Icon" Margin="10,2,2,2" Height="20" Width="20" VerticalAlignment="Center" HorizontalAlignment="Left" ContentSource="Icon"></ContentPresenter>
+                                <ContentPresenter Grid.Column="1" x:Name="HeaderHost" Margin="40,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left"  ContentSource="Header"/>
+                                <ContentPresenter Grid.Column="2" x:Name="IGTHost" Margin="0,0,0,0" VerticalAlignment="Center" ContentSource="InputGestureText"/>
+                                <Popup x:Name="SetSubPop" IsOpen="{TemplateBinding IsSubmenuOpen}"
+                                       Placement="Right">
+                                    <Border Background="#FFFFFF">
+                                        <StackPanel IsItemsHost="True"/>
+                                    </Border>
+                                </Popup>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="bgMenuItem" Property="Background" Value="#DEDEDE"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type TabControl}" x:Key="NavTabPanelStyle">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="490"/>
+            <Setter Property="Width" Value="750"/>
+            <Setter Property="Margin" Value="0,40,0,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabControl}">
+                        <Grid ClipToBounds="True" SnapsToDevicePixels="True" KeyboardNavigation.TabNavigation="Local">
+                            <Grid.RowDefinitions>
+                                <RowDefinition x:Name="RowDefinition0" Height="70"/>
+                                <RowDefinition x:Name="RowDefinition1" Height="420"/>
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" Background="#0078C8">
+                                <TabPanel x:Name="NavigationTabPanel" IsItemsHost="True" Margin="40,0,0,0" KeyboardNavigation.TabIndex="1">
+                                </TabPanel>
+                            </Border>
+                            <Border Grid.Row="1" x:Name="ContentPanel" BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
+                                    KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2"
+                                    KeyboardNavigation.TabNavigation="Local">
+                                <ContentPresenter x:Name="SelectedContentHost" ContentSource="SelectedContent" Margin="{TemplateBinding Margin}"
+                                                  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </Border>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style TargetType="{x:Type TabItem}" x:Key="NavTabItemStyle">
+            <Setter Property="Height" Value="70"/>
+            <Setter Property="Width" Value="64"/>
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TabItem}">
+                        <Border x:Name="Bd" Width="60">
+                            <Grid>
+                                <ContentPresenter x:Name="Content" ContentSource="Header"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="Bd">
+                                    <Setter.Value>
+                                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                            <GradientStop Color="#0078C8" Offset="0.20"/>
+                                            <GradientStop Color="#0070B8" Offset="0.33"/>
+                                            <GradientStop Color="#0068a8" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" TargetName="Bd">
+                                    <Setter.Value>
+                                        <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
+                                            <GradientStop Color="#0078C8" Offset="0.20"/>
+                                            <GradientStop Color="#0070B8" Offset="0.33"/>
+                                            <GradientStop Color="#0068a8" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type StackPanel}" x:Key="THPanelStyle">
+            <Setter Property="Height" Value="70"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="Margin" Value="5,0,5,0"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
+        <Style TargetType="{x:Type Image}" x:Key="TabItemImageStyle">
+            <Setter Property="Margin" Value="0,0,0,0"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Width" Value="50"/>
+        </Style>
+
+        <Style TargetType="{x:Type Label}" x:Key="TabItemLabelStyle">
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Width" Value="50"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+        </Style>
+
     </Window.Resources>
     <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
-        <StackPanel x:Name="MainMenu" Height="40"  Width="750"  HorizontalAlignment="Left" VerticalAlignment="Top" Background="#FF0078C8" Orientation="Horizontal">
+        <Grid ClipToBounds="True" SnapsToDevicePixels="True" KeyboardNavigation.TabNavigation="Local">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition x:Name="ColumnDefintion0" Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition x:Name="RowDefinition0" Height="Auto"/>
+                <RowDefinition x:Name="RowDefinition1" Height="Auto"/>
+            </Grid.RowDefinitions>
+        </Grid>
+            <StackPanel x:Name="MainMenu" Grid.Row="0" Height="40"  Width="750"  HorizontalAlignment="Left" VerticalAlignment="Top" Background="#0078C8" Orientation="Horizontal">
             <Image x:Name="image" Source="/image/timg128.ico" Margin="4,4,4,4" Height="32" Width="32"/>
             <Label x:Name="label" Content="东南大学网络空间安全学院" Margin="0,5,290,5" Height="30" Width="300" Padding="0" FontSize="18" VerticalContentAlignment="Center" Foreground="White" />
-            <Button x:Name="Set" Style="{StaticResource SettingStyle}"/>
+            <Menu x:Name="menu" Style="{StaticResource SetStyle}">
+                <MenuItem Header="菜单" Style="{StaticResource SetItemStyle1}">
+                    <MenuItem Header="设置" Style="{StaticResource SetItemStyle2}">
+                        <MenuItem.Icon>
+                            <Image Source="/image/SubSet.ico"></Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="关于" Style="{StaticResource SetItemStyle2}">
+                        <MenuItem.Icon>
+                            <Image Source="/image/Question.ico"></Image>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </MenuItem>
+            </Menu>
             <Button x:Name="Minimize" Style="{StaticResource MinimizingStyle}" Click="Minimize_Click"/>
             <Button x:Name="Close" Style="{StaticResource  ClosingStyle}"/>
         </StackPanel>
-        <DockPanel Height="490" Width="750" Margin="0,40,0,0">
+        <TabControl Style="{StaticResource NavTabPanelStyle}">
+            <TabItem Style="{StaticResource NavTabItemStyle}">
+                <TabItem.Header>
+                    <StackPanel Style="{StaticResource THPanelStyle}">
+                        <Image Style="{StaticResource TabItemImageStyle}" Source="/image/EncryptTab.ico"/>
+                        <Label Style="{StaticResource TabItemLabelStyle}" Content="加密"></Label>
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+            <TabItem Style="{StaticResource NavTabItemStyle}">
+                <TabItem.Header>
+                    <StackPanel  Style="{StaticResource THPanelStyle}">
+                        <Image Style="{StaticResource TabItemImageStyle}" Source="/image/DecryptTab.ico"/>
+                        <Label Style="{StaticResource TabItemLabelStyle}" Content="解密"></Label>
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>
+        </TabControl>
+        <!--<DockPanel Height="490" Width="750" Margin="0,40,0,0">
             <StackPanel x:Name="SubMenu" DockPanel.Dock="Top" Height="70"  Width="750" Background="#FF0078C8"></StackPanel>
             <StackPanel x:Name="WorkSpace" DockPanel.Dock="Bottom" Height="420"  Width="750"/>
-        </DockPanel>
+        </DockPanel>-->
     </Grid>
 </Window>

@@ -105,15 +105,23 @@
     <Resource Include="image\MinimizeOver.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="image\MinimizePressed.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="image\CloseEnable.ico" />
     <Resource Include="image\CloseOver.ico" />
-    <Resource Include="image\ClosePressed.ico" />
+    <Resource Include="image\ClosePress.ico" />
     <Resource Include="image\SetEnable.ico" />
     <Resource Include="image\SetOver.ico" />
-    <Resource Include="image\SetPressed.ico" />
+    <Resource Include="image\SetPress.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="image\MinimizePress.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="image\DecryptTab.ico" />
+    <Resource Include="image\EncryptTab.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="image\Question.ico" />
+    <Resource Include="image\SubSet.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
