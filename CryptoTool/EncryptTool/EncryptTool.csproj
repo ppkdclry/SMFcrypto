@@ -67,8 +67,51 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="Pages\DecryptPage\DecryptFinishPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\DecryptPage\DecryptProcessPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\DecryptPage\DecryptStartPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EncryptPage\EncryptFinishPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EncryptPage\EncryptProcessPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\EncryptPage\EncryptStartPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Pages\BasePage.cs" />
+    <Compile Include="Pages\DecryptPage\DecryptFinishPage.xaml.cs">
+      <DependentUpon>DecryptFinishPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\DecryptPage\DecryptProcessPage.xaml.cs">
+      <DependentUpon>DecryptProcessPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\DecryptPage\DecryptStartPage.xaml.cs">
+      <DependentUpon>DecryptStartPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EncryptPage\EncryptFinishPage.xaml.cs">
+      <DependentUpon>EncryptFinishPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EncryptPage\EncryptProcessPage.xaml.cs">
+      <DependentUpon>EncryptProcessPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\EncryptPage\EncryptStartPage.xaml.cs">
+      <DependentUpon>EncryptStartPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

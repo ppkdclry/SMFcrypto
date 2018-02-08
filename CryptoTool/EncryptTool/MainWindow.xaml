@@ -8,9 +8,8 @@
         Title="MainWindow" 
         WindowStartupLocation="CenterScreen" 
         Style="{StaticResource StyleNoresizeWindow}"
-        Loaded="Window_Loaded" Width="770" Height="550" ResizeMode="NoResize" MouseMove="Window_Move" WindowStyle="None" IsHitTestVisible="True" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+        Loaded="Window_Loaded" Width="770" Height="550" ResizeMode="NoResize" WindowStyle="None" IsHitTestVisible="True" ScrollViewer.VerticalScrollBarVisibility="Disabled" MouseLeftButtonDown="Window_Move">
     <Window.Resources>
-         
         <Style TargetType="{x:Type Button}" x:Key="StyleMenuButton">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="FontFamily" Value="Consolas, Microsoft YaHei"/>
@@ -30,24 +29,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <!--<Style TargetType="{x:Type Button}" x:Key="SettingStyle" BasedOn="{StaticResource StyleMenuButton}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
-                        <Image Name="setbtnbg" Source="/image/SetEnable.ico"></Image>
-                        <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="setbtnbg" Property="Source" Value="/image/SetOver.ico"></Setter>
-                            </Trigger>
-                            <Trigger Property="IsPressed" Value="True">
-                                <Setter TargetName="setbtnbg" Property="Source" Value="/image/SetPress.ico"></Setter>
-                            </Trigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>-->
 
         <Style TargetType="{x:Type Button}" x:Key="MinimizingStyle" BasedOn="{StaticResource StyleMenuButton}">
             <Setter Property="Template">
@@ -203,10 +184,10 @@
                                 </TabPanel>
                             </Border>
                             <Border Grid.Row="1" x:Name="ContentPanel" BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}"
+                                    BorderThickness="0" Background="{TemplateBinding Background}"
                                     KeyboardNavigation.DirectionalNavigation="Contained" KeyboardNavigation.TabIndex="2"
                                     KeyboardNavigation.TabNavigation="Local">
-                                <ContentPresenter x:Name="SelectedContentHost" ContentSource="SelectedContent" Margin="{TemplateBinding Margin}"
+                                <ContentPresenter x:Name="SelectedContentHost" ContentSource="SelectedContent" Margin="0"
                                                   SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                             </Border>
                         </Grid>
@@ -323,6 +304,7 @@
                         <Label Style="{StaticResource TabItemLabelStyle}" Content="加密"></Label>
                     </StackPanel>
                 </TabItem.Header>
+                <Frame Name="frmEncrypt" NavigationUIVisibility="Hidden"></Frame>
             </TabItem>
             <TabItem Style="{StaticResource NavTabItemStyle}">
                 <TabItem.Header>
@@ -331,6 +313,7 @@
                         <Label Style="{StaticResource TabItemLabelStyle}" Content="解密"></Label>
                     </StackPanel>
                 </TabItem.Header>
+                <Frame Name="frmDecrypt" NavigationUIVisibility="Hidden"></Frame>
             </TabItem>
         </TabControl>
         <!--<DockPanel Height="490" Width="750" Margin="0,40,0,0">
