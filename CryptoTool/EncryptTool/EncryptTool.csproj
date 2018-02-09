@@ -37,6 +37,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -165,6 +167,12 @@
   <ItemGroup>
     <Resource Include="image\Question.ico" />
     <Resource Include="image\SubSet.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CustomControlLib\CustomControlLib.csproj">
+      <Project>{954c30bf-8409-4294-b01d-5f21379e9b20}</Project>
+      <Name>CustomControlLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

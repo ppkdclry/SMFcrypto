@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CryptoToolTests", "CryptoTo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EncryptTool", "EncryptTool\EncryptTool.csproj", "{C3D24C89-D6B9-47F0-8ABB-B6B2A26D3371}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CustomControlLib", "CustomControlLib\CustomControlLib.csproj", "{954C30BF-8409-4294-B01D-5F21379E9B20}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{C3D24C89-D6B9-47F0-8ABB-B6B2A26D3371}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C3D24C89-D6B9-47F0-8ABB-B6B2A26D3371}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C3D24C89-D6B9-47F0-8ABB-B6B2A26D3371}.Release|Any CPU.Build.0 = Release|Any CPU
+		{954C30BF-8409-4294-B01D-5F21379E9B20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{954C30BF-8409-4294-B01D-5F21379E9B20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{954C30BF-8409-4294-B01D-5F21379E9B20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{954C30BF-8409-4294-B01D-5F21379E9B20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

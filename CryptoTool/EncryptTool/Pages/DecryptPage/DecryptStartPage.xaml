@@ -5,12 +5,39 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:EncryptTool.Pages.DecryptPage"
+      xmlns:control="clr-namespace:CustomControlLib;assembly=CustomControlLib"
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
+      d:DesignHeight="420" d:DesignWidth="750"
       Title="DecryptStartPage">
-
-    <Grid>
-        <Button Tag="DecryptProcessPage" x:Name="btnStart" Content="dStart" HorizontalAlignment="Left" Margin="159,157,0,0" VerticalAlignment="Top" Width="75" Click="btnStart_Click"/>
-
+    <base:BasePage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/CustomControlLib;component/Themes/Generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </base:BasePage.Resources>
+    <Grid Background="White">
+        <control:ImageTextBox x:Name="txtSrcFile" PlaceHolder="请输入待解密文件路径" Margin="200,85,250,295" FontSize="15" />
+        <control:ImageButton x:Name="btnFileChoose" Content="浏览" FontSize="16" Foreground="White"
+                             LayoutModel="OutSideToInSide" 
+                             Margin="500,85,150,295" 
+                             Height="40" Width="100"/>
+        <control:ImageTextBox x:Name="txtDestPath" PlaceHolder="请设置输出目录" Margin="200,155,250,224" FontSize="15" />
+        <control:ImageButton x:Name="btnDirectoryChoose" Content="浏览" FontSize="16"  Foreground="White"
+                             LayoutModel="OutSideToInSide"
+                             Margin="500,155,150,224" 
+                             Height="40" Width="100"/>
+        <PasswordBox x:Name="pwdBox" Style="{StaticResource ClearButtonPasswordBox}" 
+                     control:ControlAttachProperty.PlaceHolder="请输入解密口令"
+                     IsEnabled="True"
+                     Margin="200,225,250,154"
+                     />
+        <control:BulletCheckBox x:Name="ckboxIsDisplay" Content="CheckBox" Margin="516,225,134,155" 
+                                CheckedText="显示" UncheckedText="隐藏" Foreground="#0078C8"
+                                Style="{StaticResource BulletCheckBoxFixedStyle}" Width="100" Height="40"
+                                />
+        <control:ImageButton Tag="DecryptProcessPage" x:Name="btnStart" Content="解密"  FontSize="15"  Foreground="White"
+                             Margin="360,300,290,78"
+                             Height="40" Width="100" Click="btnStart_Click"/>
     </Grid>
 </base:BasePage>
