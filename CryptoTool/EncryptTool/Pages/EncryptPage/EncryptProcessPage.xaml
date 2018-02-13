@@ -4,12 +4,25 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:EncryptTool.Pages.EncryptPage"
+      xmlns:control="clr-namespace:CustomControlLib;assembly=CustomControlLib"
       xmlns:base="clr-namespace:EncryptTool.Pages"
       mc:Ignorable="d" 
-      d:DesignHeight="300" d:DesignWidth="300"
+      d:DesignHeight="420" d:DesignWidth="750"
       Title="EncryptProcessPage">
 
-    <Grid>
-        <Button Tag="EncryptFinishPage" x:Name="btnProcess" Content="eProcess" HorizontalAlignment="Left" Margin="134,174,0,0" VerticalAlignment="Top" Width="75" Click="btnProcess_Click"/>
+    <Grid Background="White">
+        <control:CircularProcessBar x:Name="pbEncryptTask" Value="0"
+                                    Background="#C1D1DE"
+                                    Height="150" Width="150" Margin="300,60,300,160"
+                                    BorderThickness="30" BorderBrush="#FF007ACC"
+                                    ></control:CircularProcessBar>
+
+        <control:ImageButton Tag="EncryptStartPage" x:Name="btnProcess" Content="取消" FontSize="15" Foreground="White"
+                             Margin="325,300,325,78"
+                             Height="40" Width="100" Click="btnProcess_Click"/>
+        <Label x:Name="label" Content="输出" FontSize="13" Foreground="Black" 
+               Height="40" Width="500"
+               HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+               Margin="125,250,125,130"/>
     </Grid>
 </base:BasePage>

@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:sys="clr-namespace:System;assembly=mscorlib"
     xmlns:local="clr-namespace:CustomControlLib"
-    xmlns:converter="clr-namespace:CustomControlLib.Converter">
+    xmlns:converter="clr-namespace:CustomControlLib.Converter"
+    xmlns:ed="http://schemas.microsoft.com/expression/2010/drawing">
     
     <SolidColorBrush x:Key="ImageButton.Static.Background" Color="#0078C8"/>
     <SolidColorBrush x:Key="ImageButton.Static.Border" Color="#808080"/>
@@ -157,11 +158,42 @@
 
     <converter:ImageTextBoxMarginLeftConverter x:Key="ITBMLC"/>
     <converter:PlaceholderFontSizeConverter x:Key="PHFSC"/>
-
+    <converter:ThicknessToDoubleConverter x:Key="TTDC"/>
+    <converter:PercentToAngleConverter x:Key="PTAC"/>
 
     <SolidColorBrush x:Key="ImageTextBox.Static.BorderBrush" Color="#FF909090"/>
     <SolidColorBrush x:Key="ImageTextBox.Focused.BorderBrush" Color="#FF007ACC"/>
     <SolidColorBrush x:Key="ImageTextBox.MouseOver.BorderBrush" Color="#FF007ACC"/>
+
+    <Style TargetType="{x:Type local:CircularProcessBar}">
+        <Setter Property="Background" Value="#C1D1DE"/>
+        <Setter Property="BorderBrush" Value="#FF007ACC"/>
+        <Setter Property="Maximum" Value="1"/>
+        <Setter Property="Minimum" Value="0"/>
+        <Setter Property="Value" Value="0"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:CircularProcessBar}">
+                    <Border>
+                        <Grid  SnapsToDevicePixels="True" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}">
+                            <ed:Arc Fill="{TemplateBinding Background}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" 
+                                    ArcThickness="{Binding Path=BorderThickness,RelativeSource={RelativeSource TemplatedParent},Mode=OneWay, Converter={StaticResource TTDC}}"
+                                    Margin="0" 
+                                    StartAngle="0" EndAngle="360"
+                                    Stretch="None">
+                            </ed:Arc>
+                            <ed:Arc Fill="{TemplateBinding BorderBrush}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}"
+                                    ArcThickness="{Binding Path=BorderThickness,RelativeSource={RelativeSource TemplatedParent},Mode=OneWay, Converter={StaticResource TTDC}}"
+                                    Margin="0"
+                                    StartAngle="0" EndAngle="{TemplateBinding Value,  Converter={StaticResource PTAC}}"
+                                    Stretch="None">
+                            </ed:Arc>
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
 
     <Style TargetType="{x:Type local:ImageTextBox}">

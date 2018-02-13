@@ -26,6 +26,11 @@ namespace EncryptTool
             InitializeComponent();
         }
 
+        public MainWindow(string[] args)
+        {
+            InitializeComponent();
+        }
+
         #region 窗口功能键
         /// <summary>
         /// 最小化

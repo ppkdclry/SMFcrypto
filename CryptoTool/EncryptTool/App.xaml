@@ -2,7 +2,9 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:EncryptTool"
-             StartupUri="MainWindow.xaml">
+             Startup="Application_Startup"
+             >
+    <!--StartupUri="MainWindow.xaml"--><!--为支持带参数的程序-->
     <Application.Resources>
         <Style x:Key="StyleNoresizeWindow" TargetType="{x:Type Window}">
             <Setter Property="AllowsTransparency" Value="true"/>

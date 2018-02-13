@@ -32,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -57,9 +58,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BulletCheckBox.cs" />
+    <Compile Include="CircularProcessBar.cs" />
     <Compile Include="ControlAttachProperty.cs" />
     <Compile Include="Converter\ImageTextBoxMarginLeftConverter.cs" />
+    <Compile Include="Converter\PercentToAngleConverter.cs" />
     <Compile Include="Converter\PlaceholderFontSizeConverter.cs" />
+    <Compile Include="Converter\ThicknessToDoubleConverter.cs" />
     <Compile Include="ImageButton.cs" />
     <Compile Include="ImageTextBox.cs" />
     <Compile Include="PasswordBoxHelper.cs" />

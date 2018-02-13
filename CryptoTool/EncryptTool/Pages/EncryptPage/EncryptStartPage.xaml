@@ -43,27 +43,34 @@
         </ResourceDictionary>
     </base:BasePage.Resources>
     <Grid Background="White">
-        <control:ImageTextBox x:Name="txtSrcFile" PlaceHolder="请输入待加密文件路径" Margin="200,85,250,295" FontSize="15" />
+        <control:ImageTextBox x:Name="txtSrcFile" PlaceHolder="请输入待加密文件路径" 
+                              Height="40" Width="300"
+                              Margin="175,85,275,295" FontSize="15" />
         <control:ImageButton x:Name="btnFileChoose" Content="浏览" FontSize="16" Foreground="White"
                              LayoutModel="OutSideToInSide" 
-                             Margin="500,85,150,295" 
+                             Margin="475,85,175,295" 
                              Height="40" Width="100"/>
-        <control:ImageTextBox x:Name="txtDestPath" PlaceHolder="请设置输出目录" Margin="200,155,250,224" FontSize="15" />
+        <control:ImageTextBox x:Name="txtDestPath" PlaceHolder="请设置输出目录" 
+                              Height="40" Width="300"
+                              Margin="175,155,275,225"
+                              FontSize="15" />
         <control:ImageButton x:Name="btnDirectoryChoose" Content="浏览" FontSize="16"  Foreground="White"
                              LayoutModel="OutSideToInSide"
-                             Margin="500,155,150,224" 
+                             Margin="475,155,175,225" 
                              Height="40" Width="100"/>
         <PasswordBox x:Name="pwdBox" Style="{StaticResource ClearButtonPasswordBox}" 
                      control:ControlAttachProperty.PlaceHolder="请输入加密口令"
                      IsEnabled="True"
-                     Margin="200,225,250,154"
+                     Margin="175,225,275,155"
+                     Height="40" Width="300"
                      />
-        <control:BulletCheckBox x:Name="ckboxIsDisplay" Content="CheckBox" Margin="516,225,134,155" 
+        <control:BulletCheckBox x:Name="ckboxIsDisplay" Content="CheckBox" 
+                                Margin="500,225,150,155" 
                                 CheckedText="显示" UncheckedText="隐藏" Foreground="#0078C8"
                                 Style="{StaticResource BulletCheckBoxFixedStyle}" Width="100" Height="40"
                                 />
         <control:ImageButton x:Name="btnStart" Tag="EncryptProcessPage"  Content="加密" FontSize="15"  Foreground="White"
-                             Margin="360,300,290,78"
+                             Margin="325,300,325,80"
                              Height="40" Width="100" Click="btnStart_Click"/>
     </Grid>
 </base:BasePage>
