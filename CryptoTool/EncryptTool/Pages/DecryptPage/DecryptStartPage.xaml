@@ -16,7 +16,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </base:BasePage.Resources>
-    <Grid Background="White">
+    <Grid Background="White" Loaded="DecryptStartPage_Loaded">
         <control:ImageTextBox x:Name="txtSrcFile" PlaceHolder="请输入待解密文件路径" 
                               Margin="175,85,275,295" FontSize="15" />
         <control:ImageButton x:Name="btnFileChoose" Content="浏览" FontSize="16" Foreground="White"

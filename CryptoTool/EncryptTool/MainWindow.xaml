@@ -296,7 +296,7 @@
             <Button x:Name="Minimize" Style="{StaticResource MinimizingStyle}" Click="Minimize_Click"/>
             <Button x:Name="Close" Style="{StaticResource  ClosingStyle}"/>
         </StackPanel>
-        <TabControl Style="{StaticResource NavTabPanelStyle}">
+        <TabControl Name="TabPages" Style="{StaticResource NavTabPanelStyle}">
             <TabItem Style="{StaticResource NavTabItemStyle}">
                 <TabItem.Header>
                     <StackPanel Style="{StaticResource THPanelStyle}">

@@ -13,6 +13,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
+using EncryptTool.Pages.EncryptPage;
+using EncryptTool.Pages.DecryptPage;
 
 namespace EncryptTool
 {
@@ -21,6 +24,19 @@ namespace EncryptTool
     /// </summary>
     public partial class MainWindow : Window
     {
+        #region 主界面初始化
+        private string inputFile = null;
+        private string defaultDestPath = null;
+        private bool isEncryptFile = true;
+
+        /// <summary>
+        /// 用于在各个页面传递加解密文件数据
+        /// </summary>
+        public string encryptSrcFile = null;
+        public string encryptDestPath = null;
+        public string decryptSrcFile = null;
+        public string decryptDestPath = null;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -29,7 +45,53 @@ namespace EncryptTool
         public MainWindow(string[] args)
         {
             InitializeComponent();
+
+            //解析输入参数，并将输入参数中的"/d"和"/e"删去，若存在"/d"则将启示页面设置为解密
+            ParseParameter(args);
         }
+
+        private void ParseParameter(string[] args)
+        {
+            for(int i = 0;i < args.Length; i++)
+            {
+                if (args[i].Equals("/d")){
+                    isEncryptFile = false;
+                }else if (args[i].Equals("/e")){
+                    isEncryptFile = true;
+                }else if (File.Exists(args[i])){//当非"/e"或者"/d"时，判断该文件是否存在，如果存在设为源文件
+                    inputFile = args[i];
+                    //设置待输出目录
+                    try{
+                        defaultDestPath = System.IO.Path.GetDirectoryName(inputFile);
+                    }
+                    catch (Exception){
+                        defaultDestPath = null;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 初始化设置
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //初始化时将加密、解密页面设置为StartPage
+            NavigateEncrypt("EncryptStartPage");
+            NavigateDecrypt("DecryptStartPage");
+            if (isEncryptFile){
+                TabPages.SelectedIndex = 0;
+                encryptSrcFile = inputFile;
+                encryptDestPath = defaultDestPath;
+            }else{
+                TabPages.SelectedIndex = 1;
+                decryptSrcFile = inputFile;
+                decryptDestPath = defaultDestPath;
+            }
+        }
+        #endregion
 
         #region 窗口功能键
         /// <summary>
@@ -57,12 +119,7 @@ namespace EncryptTool
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            //初始化时将加密、解密页面设置为StartPage
-            NavigateEncrypt("EncryptStartPage");
-            NavigateDecrypt("DecryptStartPage");
-        }
+
         #endregion
 
         #region 加密页面跳转

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.IO;
 
 namespace EncryptTool.Pages.EncryptPage
 {
@@ -29,6 +30,17 @@ namespace EncryptTool.Pages.EncryptPage
         {
             Button obj = sender as Button;
             ParentWindow.NavigateEncrypt(obj.Tag.ToString());
+        }
+
+        private void EncryptStartPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(ParentWindow != null){
+                if (ParentWindow.encryptSrcFile != null && ParentWindow.encryptDestPath != null){
+                    //设置待加密文件
+                    txtSrcFile.Text = ParentWindow.encryptSrcFile;
+                    txtDestPath.Text = ParentWindow.encryptDestPath;
+                }
+            }
         }
     }
 }

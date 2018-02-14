@@ -45,7 +45,7 @@
     <Grid Background="White">
         <control:ImageTextBox x:Name="txtSrcFile" PlaceHolder="请输入待加密文件路径" 
                               Height="40" Width="300"
-                              Margin="175,85,275,295" FontSize="15" />
+                              Margin="175,85,275,295" FontSize="15" Loaded="EncryptStartPage_Loaded" />
         <control:ImageButton x:Name="btnFileChoose" Content="浏览" FontSize="16" Foreground="White"
                              LayoutModel="OutSideToInSide" 
                              Margin="475,85,175,295" 

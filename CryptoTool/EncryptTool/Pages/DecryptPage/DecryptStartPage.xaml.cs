@@ -30,5 +30,18 @@ namespace EncryptTool.Pages.DecryptPage
             Button obj = sender as Button;
             ParentWindow.NavigateDecrypt(obj.Tag.ToString());
         }
+
+        private void DecryptStartPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (ParentWindow != null)
+            {
+                if (ParentWindow.decryptSrcFile != null && ParentWindow.decryptDestPath != null)
+                {
+                    //设置待加密文件
+                    txtSrcFile.Text = ParentWindow.decryptSrcFile;
+                    txtDestPath.Text = ParentWindow.decryptDestPath;
+                }
+            }
+        }
     }
 }
