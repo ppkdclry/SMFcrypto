@@ -16,6 +16,7 @@ using System.Windows.Shapes;
 using System.IO;
 using EncryptTool.Pages.EncryptPage;
 using EncryptTool.Pages.DecryptPage;
+using System.Windows.Forms;
 
 namespace EncryptTool
 {
@@ -45,7 +46,6 @@ namespace EncryptTool
         public MainWindow(string[] args)
         {
             InitializeComponent();
-
             //解析输入参数，并将输入参数中的"/d"和"/e"删去，若存在"/d"则将启示页面设置为解密
             ParseParameter(args);
         }
@@ -94,6 +94,7 @@ namespace EncryptTool
         #endregion
 
         #region 窗口功能键
+
         /// <summary>
         /// 最小化
         /// </summary>
@@ -101,7 +102,12 @@ namespace EncryptTool
         /// <param name="e"></param>
         private void Minimize_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("最小化");
+            this.WindowState = WindowState.Minimized;
+        }
+
+        private void Close_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
         #endregion
 
@@ -178,8 +184,9 @@ namespace EncryptTool
                 }
             }
         }
-        #endregion
 
+
+        #endregion
 
     }
 }

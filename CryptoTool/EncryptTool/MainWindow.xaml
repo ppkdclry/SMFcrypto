@@ -8,7 +8,8 @@
         Title="MainWindow" 
         WindowStartupLocation="CenterScreen" 
         Style="{StaticResource StyleNoresizeWindow}"
-        Loaded="Window_Loaded" Width="770" Height="550" ResizeMode="NoResize" WindowStyle="None" IsHitTestVisible="True" ScrollViewer.VerticalScrollBarVisibility="Disabled" MouseLeftButtonDown="Window_Move">
+        Icon="/image/timg128.ico"
+        Loaded="Window_Loaded" Width="770" Height="550" ResizeMode="CanMinimize" WindowStyle="None" IsHitTestVisible="True" ScrollViewer.VerticalScrollBarVisibility="Disabled" MouseLeftButtonDown="Window_Move">
     <Window.Resources>
         <Style TargetType="{x:Type Button}" x:Key="StyleMenuButton">
             <Setter Property="Background" Value="Transparent"/>
@@ -195,7 +196,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <Style TargetType="{x:Type TabItem}" x:Key="NavTabItemStyle">
             <Setter Property="Height" Value="70"/>
             <Setter Property="Width" Value="64"/>
@@ -266,7 +267,10 @@
         </Style>
 
     </Window.Resources>
-    <Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+    <Window.TaskbarItemInfo>
+        <TaskbarItemInfo x:Name="taskBar" Description="加解密任务栏演示"/>
+    </Window.TaskbarItemInfo>
+    <Grid Name="MainGrid" HorizontalAlignment="Left" VerticalAlignment="Top">
         <Grid ClipToBounds="True" SnapsToDevicePixels="True" KeyboardNavigation.TabNavigation="Local">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition x:Name="ColumnDefintion0" Width="Auto"/>
@@ -294,7 +298,7 @@
                 </MenuItem>
             </Menu>
             <Button x:Name="Minimize" Style="{StaticResource MinimizingStyle}" Click="Minimize_Click"/>
-            <Button x:Name="Close" Style="{StaticResource  ClosingStyle}"/>
+            <Button x:Name="Close" Style="{StaticResource  ClosingStyle}" Click="Close_Click"/>
         </StackPanel>
         <TabControl Name="TabPages" Style="{StaticResource NavTabPanelStyle}">
             <TabItem Style="{StaticResource NavTabItemStyle}">
