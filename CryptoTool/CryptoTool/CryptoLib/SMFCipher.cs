@@ -262,6 +262,7 @@ namespace CryptoTool.CryptoLib
         ///加密标识
         private const ulong SM4_TAG = 0x8765432112345678;
         private const int BUFSIZE = 128 * 1024;
+
         /// <summary>
         /// 可取消文件加密
         /// </summary>

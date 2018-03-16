@@ -280,7 +280,7 @@
                 <RowDefinition x:Name="RowDefinition1" Height="Auto"/>
             </Grid.RowDefinitions>
         </Grid>
-            <StackPanel x:Name="MainMenu" Grid.Row="0" Height="40"  Width="750"  HorizontalAlignment="Left" VerticalAlignment="Top" Background="#0078C8" Orientation="Horizontal">
+        <StackPanel x:Name="MainMenu" Grid.Row="0" Height="40"  Width="750"  HorizontalAlignment="Left" VerticalAlignment="Top" Background="#0078C8" Orientation="Horizontal">
             <Image x:Name="image" Source="/image/timg128.ico" Margin="4,4,4,4" Height="32" Width="32"/>
             <Label x:Name="label" Content="东南大学网络空间安全学院" Margin="0,5,290,5" Height="30" Width="300" Padding="0" FontSize="18" VerticalContentAlignment="Center" Foreground="White" />
             <Menu x:Name="menu" Style="{StaticResource SetStyle}">
