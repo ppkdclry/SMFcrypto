@@ -350,6 +350,7 @@
         <Setter Property="BorderBrush" Value="{StaticResource PasswordBox.Static.BorderBrush}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="CaretBrush" Value="{StaticResource PasswordBox.Static.Foreground}"/>
         <Setter Property="local:PasswordBoxHelper.Attach" Value="True"/>
         <Setter Property="local:PasswordBoxHelper.Password" Value="{Binding Path=Password,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
@@ -383,6 +384,18 @@
                                        Text="{Binding Path=(local:ControlAttachProperty.PlaceHolder), RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"                          
                                        FontSize="15"
                                        FontFamily="Microsoft YaHei"/>
+
+                            <TextBox x:Name="PART_PasswordShower" Grid.Column="1"  
+                                    Focusable="False"  
+                                    Margin="10,0,10,0"   Padding="0"  
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Center"  
+                                    BorderBrush="Transparent" BorderThickness="0"  
+                                    Visibility="Collapsed" IsHitTestVisible="False"  
+                                    Width="{Binding CaretIndex, RelativeSource={RelativeSource TemplatedParent}}"  
+                                    Text="{Binding Path=(local:PasswordBoxHelper.Password), RelativeSource={RelativeSource TemplatedParent}}"  
+                                    FontSize="15"
+                                    FontFamily="Microsoft YaHei"
+                                    CaretBrush="Transparent"/>
                             <!--Text="{Binding Path=(local:ControlAttachProperty.PlaceHolder), RelativeSource={RelativeSource TemplatedParent}}"-->
                             <!--附加内容区域-->
                             <!--<Border x:Name="PART_AttachContent" Grid.Column="2" Margin="1"  
@@ -405,9 +418,26 @@
                         <!--<DataTrigger Binding="{Binding Path=controls:PasswordBoxHelper.Password, RelativeSource={RelativeSource TemplatedParent}}" Value="">  
                             <Setter TargetName="PART_PlaceHolder" Property="Visibility" Value="Visible"/>  
                         </DataTrigger>-->
+                        
                         <Trigger Property="local:PasswordBoxHelper.Password"  Value="">
                             <Setter TargetName="PART_PlaceHolder" Property="Visibility" Value="Visible"/>
                             <Setter TargetName="PART_ClearTextButton" Property="IsEnabled" Value="False"/>
+                        </Trigger>
+
+                        <Trigger Property="IsTabStop" Value="True">
+                            <Setter TargetName="PART_PasswordShower" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="PART_PasswordShower" Property="IsHitTestVisible" Value="True"/>
+                            <Setter TargetName="PART_PasswordShower" Property="CaretBrush" Value="Black"/>
+                            <Setter TargetName="PART_PasswordShower" Property="Focusable" Value="True"/>
+                            <Setter  Property="BorderBrush" Value="{StaticResource PasswordBox.Focused.BorderBrush}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsTabStop" Value="False">
+                            <Setter TargetName="PART_PasswordShower" Property="Visibility" Value="Hidden"/>
+                            <Setter TargetName="PART_PasswordShower" Property="IsHitTestVisible" Value="True"/>
+                            <Setter TargetName="PART_PasswordShower" Property="CaretBrush" Value="Black"/>
+                            <Setter TargetName="PART_PasswordShower" Property="Focusable" Value="True"/>
+                            <Setter  Property="BorderBrush" Value="{StaticResource PasswordBox.Focused.BorderBrush}"/>
                         </Trigger>
 
                         <Trigger Property="IsMouseOver" Value="True">
@@ -449,6 +479,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
 
     <sys:Double x:Key="BulletCheckBox.FixWidth">70</sys:Double>
     <sys:Double x:Key="BulletCheckBox.FixHeight">28</sys:Double>
@@ -728,5 +760,139 @@
         <Setter Property="Margin" Value="0"/>
         <Setter Property="Template" Value="{StaticResource BulletCheckBox_Templeate}"/>
     </Style>
+
+    <!--<Style x:Key="PasswordBoxToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ToggleButton}">
+                    <Border Background="Transparent" Margin="2">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock x:Name="txt" Grid.Column="1"  
+                                    HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                    Text="" FontSize="20"/>
+                        </Grid>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="txt" Property="Text" Value=""/>
+                            <Setter TargetName="txt" Property="Foreground" Value="Black"/>
+                        </Trigger>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="txt" Property="Foreground" Value="Black"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="EyePasswordBox" TargetType="{x:Type PasswordBox}">
+        <Setter Property="SelectionBrush" Value="{StaticResource PasswordBox.Static.SelectionBrush}"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="FontSize" Value="16"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="PasswordChar" Value="●"/>
+        <Setter Property="Background" Value="{StaticResource PasswordBox.Static.Background}"/>
+        <Setter Property="Foreground" Value="{StaticResource PasswordBox.Static.Foreground}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource PasswordBox.Static.BorderBrush}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="SnapsToDevicePixels" Value="True" />
+        <Setter Property="CaretBrush" Value="{StaticResource PasswordBox.Static.Foreground}"/>
+        <Setter Property="local:PasswordBoxHelper.Attach" Value="True"/>
+        <Setter Property="local:PasswordBoxHelper.Password" Value="{Binding Path=Password,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type PasswordBox}">
+                    <Border x:Name="PART_Root" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"  
+                        CornerRadius="{TemplateBinding local:ControlAttachProperty.CornerRadius}"  
+                        BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"  
+                        Background="{TemplateBinding Background}">
+                        <Grid x:Name="PART_InnerGrid">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="{Binding Path=(local:ControlAttachProperty.CornerRadius).TopLeft, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ITBMLC}}"/>
+                                <ColumnDefinition  Width="*"/>
+                                <ColumnDefinition  Width="Auto"/>
+                                <ColumnDefinition Width="{Binding Path=(local:ControlAttachProperty.CornerRadius).TopLeft, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource ITBMLC}}"/>
+                            </Grid.ColumnDefinitions>
+
+                            --><!--内容区域--><!--
+                            <ScrollViewer x:Name="PART_ContentHost" Grid.Column="1" Margin="8,0,10,0"  
+                                        BorderThickness="0" IsTabStop="False"  
+                                        VerticalAlignment="Stretch" Background="{x:Null}"  
+                                        VerticalContentAlignment="Center"/>
+
+                            --><!--显示密码明文--><!--
+                            <TextBox x:Name="PART_PasswordShower" Grid.Column="1"  
+                                    IsTabStop="True" Focusable="False"  
+                                    Margin="10,0,10,0"   Padding="0"  
+                                    HorizontalAlignment="Stretch" VerticalAlignment="Center"  
+                                    BorderBrush="Transparent" BorderThickness="0"  
+                                    Visibility="Collapsed" IsHitTestVisible="False"  
+                                    Width="{Binding CaretIndex, RelativeSource={RelativeSource TemplatedParent}}"  
+                                    Text="{Binding Path=(local:PasswordBoxHelper.Password), RelativeSource={RelativeSource TemplatedParent}}"  
+                                    FontSize="15"
+                                    FontFamily="Microsoft YaHei"
+                                    CaretBrush="Transparent"/>
+
+                            <TextBlock x:Name="PART_PlaceHolder" Grid.Column="1" Foreground="Black"  
+                                    IsHitTestVisible="False" Margin="10,0,10,0"   
+                                    HorizontalAlignment="Left" VerticalAlignment="Center"  
+                                    SnapsToDevicePixels="True"  
+                                    Visibility="Collapsed" Opacity="0.8"  
+                                    TextAlignment="Center"  
+                                    Text="{Binding Path=(local:ControlAttachProperty.PlaceHolder), RelativeSource={RelativeSource TemplatedParent}}"  
+                                    FontSize="15"
+                                    FontFamily="Microsoft YaHei"/>
+
+                            --><!--附加内容区域--><!--
+                            <ToggleButton x:Name="PART_EyeToggle" Grid.Column="2"  
+                                        IsTabStop="True" Focusable="False"  
+                                        BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}"  
+                                        Background="{Binding Background,RelativeSource={RelativeSource TemplatedParent}}"  
+                                        Foreground="Black" FontWeight="Medium"  
+                                        IsEnabled="True"  
+                                        IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"  
+                                        Style="{StaticResource PasswordBoxToggleButtonStyle}"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="local:PasswordBoxHelper.Password" Value="">
+                            <Setter TargetName="PART_PlaceHolder" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="PART_EyeToggle" Property="IsEnabled" Value="False"/>
+                        </Trigger>
+
+                        <DataTrigger Binding="{Binding IsChecked, ElementName=PART_EyeToggle}" Value="True">
+                            <Setter TargetName="PART_PasswordShower" Property="Visibility" Value="Visible"/>
+                            <Setter TargetName="PART_PasswordShower" Property="IsHitTestVisible" Value="True"/>
+                            <Setter TargetName="PART_PasswordShower" Property="CaretBrush" Value="Black"/>
+                            <Setter TargetName="PART_PasswordShower" Property="Focusable" Value="True"/>
+                            <Setter  Property="BorderBrush" Value="{StaticResource PasswordBox.Focused.BorderBrush}"/>
+                        </DataTrigger>
+
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter  Property="BorderBrush" Value="{StaticResource PasswordBox.MouseOver.BorderBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter  Property="BorderBrush" Value="{StaticResource PasswordBox.Focused.BorderBrush}"/>
+                        </Trigger>
+
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="PART_Root" Property="Opacity" Value="0.4"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>-->
 
 </ResourceDictionary>

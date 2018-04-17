@@ -42,10 +42,10 @@
             </Style>
         </ResourceDictionary>
     </base:BasePage.Resources>
-    <Grid Background="White">
+    <Grid Background="White" Loaded="EncryptStartPage_Loaded">
         <control:ImageTextBox x:Name="txtSrcFile" PlaceHolder="请输入待加密文件路径" 
                               Height="40" Width="300"
-                              Margin="175,85,275,295" FontSize="15" Loaded="EncryptStartPage_Loaded" />
+                              Margin="175,85,275,295" FontSize="15"  />
         <control:ImageButton x:Name="btnFileChoose" Content="浏览" FontSize="16" Foreground="White"
                              LayoutModel="OutSideToInSide" 
                              Margin="475,85,175,295" 
@@ -68,6 +68,7 @@
                                 Margin="500,225,150,155" 
                                 CheckedText="显示" UncheckedText="隐藏" Foreground="#0078C8"
                                 Style="{StaticResource BulletCheckBoxFixedStyle}" Width="100" Height="40"
+                                Checked="IsShowPassword_Checked" Unchecked="IsShowPassword_Unchecked"
                                 />
         <control:ImageButton x:Name="btnStart" Tag="EncryptProcessPage"  Content="加密" FontSize="15"  Foreground="White"
                              Margin="325,300,325,80"

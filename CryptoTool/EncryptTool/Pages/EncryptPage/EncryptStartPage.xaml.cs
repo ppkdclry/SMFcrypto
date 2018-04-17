@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.IO;
+using CustomControlLib;
 
 namespace EncryptTool.Pages.EncryptPage
 {
@@ -41,6 +42,26 @@ namespace EncryptTool.Pages.EncryptPage
                     txtDestPath.Text = ParentWindow.encryptDestPath;
                 }
             }
+        }
+
+        /// <summary>
+        /// 密码显示设置
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void IsShowPassword_Checked(object sender, RoutedEventArgs e)
+        {
+            pwdBox.IsTabStop = true;        //利用IsTabStop属性的值变动触发内部明文代码框的折叠和显示，仅适合该项目(不安全用法)
+        }
+
+        /// <summary>
+        /// 密码隐藏设置
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void IsShowPassword_Unchecked(object sender, RoutedEventArgs e)
+        {
+            pwdBox.IsTabStop = false;
         }
     }
 }
