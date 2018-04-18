@@ -10,17 +10,17 @@
       d:DesignHeight="420" d:DesignWidth="750"
       Title="EncryptFinishPage">
 
-    <Grid Background="White">
-        <Image Source="/image/Succeed.png" Height="150" Width="150" Margin="300,60,300,160"></Image>
-        <control:ImageButton Tag="EncryptStartPage" x:Name="btnFinish" Content="浏览"  FontSize="15"  Foreground="White"
+    <Grid Background="White"  Loaded="EncryptFinishPage_Loaded">
+        <Image x:Name="imgResult" Source="/image/Succeed.png" Height="150" Width="150" Margin="300,60,300,160"></Image>
+        <control:ImageButton Tag="EncryptStartPage" x:Name="btnFinish" Content="完成"  FontSize="15"  Foreground="White"
                              Margin="400,300,250,80"
                              Height="40" Width="100"  Click="btnFinish_Click"/>
         <Label x:Name="label" Content="" FontSize="13" Foreground="Black" 
                Height="40" Width="500"
                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                Margin="125,250,125,130"/>
-        <control:ImageButton x:Name="btnScan" Content="完成"  FontSize="15"  Foreground="White"
+        <control:ImageButton x:Name="btnScan" Content="浏览"  FontSize="15"  Foreground="White"
                              Margin="250,300,400,80"
-                             Height="40" Width="100"/>
+                             Height="40" Width="100" Click="btnScan_Click"/>
     </Grid>
 </base:BasePage>

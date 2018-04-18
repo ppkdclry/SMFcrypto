@@ -36,9 +36,13 @@ namespace EncryptTool
         public string encryptSrcFile = null;
         public string encryptDestPath = null;
         public string encryptPassword = null;
+        public bool isEncryptOK = false;
+        public string encryptResult = null;
         public string decryptSrcFile = null;
         public string decryptDestPath = null;
         public string decryptPassword = null;
+        public bool isDecryptOK = false;
+        public string decryptResult = null;
 
         public MainWindow()
         {

@@ -82,6 +82,16 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CryptoLib\CryptEventHandler.cs" />
+    <Compile Include="CryptoLib\SMFCipher.cs" />
+    <Compile Include="CryptoLib\Utils\ByteUtils.cs" />
+    <Compile Include="CryptoLib\Utils\Hex.cs" />
+    <Compile Include="CryptoLib\Utils\SM4.cs" />
+    <Compile Include="CryptoLib\Utils\SM4Utils.cs" />
+    <Compile Include="CryptoLib\Utils\SMFCBC.cs" />
+    <Compile Include="CryptoLib\Utils\SMFCore.cs" />
+    <Compile Include="CryptoLib\Utils\SmfDecryptTransform.cs" />
+    <Compile Include="CryptoLib\Utils\SmfEncryptTransform.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

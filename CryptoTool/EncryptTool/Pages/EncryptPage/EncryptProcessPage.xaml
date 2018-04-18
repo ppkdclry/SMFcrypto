@@ -10,11 +10,11 @@
       d:DesignHeight="420" d:DesignWidth="750"
       Title="EncryptProcessPage">
 
-    <Grid Background="White">
+    <Grid Background="White" Loaded="EncryptProcessPage_Loaded">
         <control:CircularProcessBar x:Name="pbEncryptTask" Value="0"
                                     Background="#C1D1DE"
                                     Height="150" Width="150" Margin="300,60,300,160"
-                                    BorderThickness="30" BorderBrush="#FF007ACC"
+                                    BorderThickness="30" BorderBrush="#FF007ACC" 
                                     ></control:CircularProcessBar>
 
         <control:ImageButton Tag="EncryptStartPage" x:Name="btnProcess" Content="取消" FontSize="15" Foreground="White"
