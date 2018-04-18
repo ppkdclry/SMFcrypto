@@ -49,7 +49,9 @@
         <control:ImageButton x:Name="btnFileChoose" Content="浏览" FontSize="16" Foreground="White"
                              LayoutModel="OutSideToInSide" 
                              Margin="475,85,175,295" 
-                             Height="40" Width="100"/>
+                             Height="40" Width="100"
+                             Click="ChooseSrcFile_Click"
+                             />
         <control:ImageTextBox x:Name="txtDestPath" PlaceHolder="请设置输出目录" 
                               Height="40" Width="300"
                               Margin="175,155,275,225"
@@ -57,7 +59,9 @@
         <control:ImageButton x:Name="btnDirectoryChoose" Content="浏览" FontSize="16"  Foreground="White"
                              LayoutModel="OutSideToInSide"
                              Margin="475,155,175,225" 
-                             Height="40" Width="100"/>
+                             Height="40" Width="100"
+                             Click="ChooseDestPath_Click"
+                             />
         <PasswordBox x:Name="pwdBox" Style="{StaticResource ClearButtonPasswordBox}" 
                      control:ControlAttachProperty.PlaceHolder="请输入加密口令"
                      IsEnabled="True"

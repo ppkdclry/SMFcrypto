@@ -23,6 +23,7 @@
         <Label x:Name="label" Content="输出" FontSize="13" Foreground="Black" 
                Height="40" Width="500"
                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
-               Margin="125,250,125,130"/>
+               Margin="125,250,125,130"
+               />
     </Grid>
 </base:BasePage>

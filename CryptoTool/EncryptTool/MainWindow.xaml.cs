@@ -31,12 +31,14 @@ namespace EncryptTool
         private bool isEncryptFile = true;
 
         /// <summary>
-        /// 用于在各个页面传递加解密文件数据
+        /// 用于在各个页面传递加解密文件数据（虽然不安全，但在单机加密工具中可行）
         /// </summary>
         public string encryptSrcFile = null;
         public string encryptDestPath = null;
+        public string encryptPassword = null;
         public string decryptSrcFile = null;
         public string decryptDestPath = null;
+        public string decryptPassword = null;
 
         public MainWindow()
         {
